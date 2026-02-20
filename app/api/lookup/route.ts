@@ -15,7 +15,7 @@ function cleanBarcode(code: string) {
 
 async function fetchGoUPC(barcode: string): Promise<NormalizedProduct | null> {
   const key = process.env.GO_UPC_API_KEY;
-  if (!key) throw new Error("Missing GO_UPC_API_KEY (set it in Vercel env vars)");
+  if (!key) return null;
 
   const url = `https://go-upc.com/api/v1/code/${encodeURIComponent(barcode)}`;
   const res = await fetch(url, {
@@ -107,3 +107,4 @@ export async function GET(req: Request) {
     );
   }
 }
+
