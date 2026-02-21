@@ -62,8 +62,39 @@ function Pill({ text, onRemove }: { text: string; onRemove: () => void }) {
     </span>
   );
 }
-function highlightText(...) {
-  ...
+function highlightText(original: string, highlightTerms: string[]) {
+  if (!original || !highlightTerms.length) return original;
+
+  let parts: Array<string | JSX.Element> = [original];
+
+  for (const term of highlightTerms) {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`(${escaped})`, "ig");
+
+    parts = parts.flatMap((p, idx) => {
+      if (typeof p !== "string") return [p];
+      const split = p.split(re);
+      return split.map((chunk, i) => {
+        if (i % 2 === 1) {
+          return (
+            <mark
+              key={`${idx}-${i}-${chunk}`}
+              style={{
+                background: "#fff2a8",
+                padding: "0 2px",
+                borderRadius: 4,
+              }}
+            >
+              {chunk}
+            </mark>
+          );
+        }
+        return chunk;
+      });
+    });
+  }
+
+  return parts;
 }
 
 export default function Home() {
@@ -330,5 +361,6 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
     </main>
   );
 }
+
 
 
