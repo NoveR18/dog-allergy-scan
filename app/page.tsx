@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { dedupeAllergens, findAllergenHits } from "@/lib/allergy";
+import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
 import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
 import { clsx } from "@/lib/ui";
 
@@ -325,3 +325,4 @@ export default function Home() {
     </main>
   );
 }
+
