@@ -62,6 +62,9 @@ function Pill({ text, onRemove }: { text: string; onRemove: () => void }) {
     </span>
   );
 }
+function highlightText(...) {
+  ...
+}
 
 export default function Home() {
   const [profile, setProfile] = useState<StoredProfile>({ dogName: "My Dog", allergens: [] });
@@ -85,7 +88,7 @@ export default function Home() {
     if (!product?.ingredientsText) return [];
     return findAllergenHits(product.ingredientsText, profile.allergens);
   }, [product, profile.allergens]);
-
+const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
   const verdict =
     !product ? null :
     !product.ingredientsText ? "unknown" :
@@ -304,7 +307,9 @@ export default function Home() {
                 <div style={{ marginTop: 10 }}>
                   <div style={{ fontWeight: 800 }}>Ingredients</div>
                   <p style={{ whiteSpace: "pre-wrap", opacity: 0.9 }}>
-                    {product.ingredientsText || "No ingredient text returned from sources."}
+                    {product.ingredientsText
+  ? highlightText(product.ingredientsText, highlightTerms)
+  : "No ingredient text returned from sources."}
                   </p>
                 </div>
 
@@ -325,4 +330,5 @@ export default function Home() {
     </main>
   );
 }
+
 
