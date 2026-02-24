@@ -11,6 +11,7 @@ type Product = {
   brand?: string;
   imageUrl?: string;
   ingredientsText?: string;
+  note?: string;
   source: string;
 };
 
@@ -122,7 +123,7 @@ export default function Home() {
 const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
   const verdict =
     !product ? null :
-    !product.ingredientsText ? "unknown" :
+    !product.ingredientsText || product.note ? "unknown" :
     hits.length ? "avoid" :
     "safe";
 
@@ -363,6 +364,7 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
     </main>
   );
 }
+
 
 
 
