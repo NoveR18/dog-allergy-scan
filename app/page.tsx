@@ -148,7 +148,7 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
       setProduct(j);
       setStatus("idle");
     } catch (e: any) {
-      setError(e?.message || "Error");
+      setError("Product found, but ingredient text isn’t available in English yet.");
       setStatus("error");
     }
   }
@@ -363,6 +363,7 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
     </main>
   );
 }
+
 
 
 
