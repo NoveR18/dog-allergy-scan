@@ -322,7 +322,13 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
                   {verdict === "unknown" && "⚠️ UNKNOWN"}
                 </div>
               </div>
-
+              
+{hits.length > 0 && (
+  <div style={{ marginTop: 8, fontSize: 13, opacity: 0.8 }}>
+    Matched: {hits.map(h => h.allergen).join(", ")}
+  </div>
+)}
+              
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
                   <>
@@ -361,6 +367,7 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
     </main>
   );
 }
+
 
 
 
