@@ -55,6 +55,9 @@ async function fetchOpenPetFoodFacts(barcode: string): Promise<NormalizedProduct
     brand: p.brands,
     imageUrl: p.image_url,
     ingredientsText: p.ingredients_text_en || "",
+    note: p.ingredients_text_en
+  ? undefined
+  : "Ingredients not available in English for this barcode.",
     source: "openpetfoodfacts",
   };
 }
@@ -74,6 +77,9 @@ async function fetchOpenFoodFacts(barcode: string): Promise<NormalizedProduct | 
     brand: p.brands,
     imageUrl: p.image_url,
     ingredientsText: p.ingredients_text_en || "",
+    note: p.ingredients_text_en
+  ? undefined
+  : "Ingredients not available in English for this barcode.",
     source: "openfoodfacts",
   };
 }
@@ -108,6 +114,7 @@ export async function GET(req: Request) {
     );
   }
 }
+
 
 
 
