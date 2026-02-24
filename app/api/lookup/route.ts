@@ -6,6 +6,7 @@ type NormalizedProduct = {
   brand?: string;
   imageUrl?: string;
   ingredientsText?: string;
+  note?: string;
   source: "go-upc" | "openpetfoodfacts" | "openfoodfacts" | "none";
 };
 
@@ -107,6 +108,7 @@ export async function GET(req: Request) {
     );
   }
 }
+
 
 
 
