@@ -53,7 +53,7 @@ async function fetchOpenPetFoodFacts(barcode: string): Promise<NormalizedProduct
     name: p.product_name_en || p.product_name,
     brand: p.brands,
     imageUrl: p.image_url,
-    ingredientsText: p.ingredients_text_en || p.ingredients_text,
+    ingredientsText: p.ingredients_text_en || "",
     source: "openpetfoodfacts",
   };
 }
@@ -107,6 +107,7 @@ export async function GET(req: Request) {
     );
   }
 }
+
 
 
 
