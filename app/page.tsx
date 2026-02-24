@@ -329,8 +329,10 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
                     <div style={{ fontWeight: 800 }}>Matched allergens for {profile.dogName}:</div>
                     <ul style={{ marginTop: 8 }}>
                       {hits.map((h) => (
-                        <li key={h.allergen}>{h.allergen}</li>
-                      ))}
+  <li key={h.allergen}>
+    {h.allergen} ({h.matched})
+  </li>
+))}
                     </ul>
                   </>
                 )}
@@ -361,6 +363,7 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
     </main>
   );
 }
+
 
 
 
