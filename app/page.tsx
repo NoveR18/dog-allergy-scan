@@ -121,11 +121,15 @@ export default function Home() {
     return findAllergenHits(product.ingredientsText, profile.allergens);
   }, [product, profile.allergens]);
 const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
-  const verdict =
-    !product ? null :
-    !product.ingredientsText || product.note ? "unknown" :
-    hits.length ? "avoid" :
-    "safe";
+  const looksEnglish =
+  product?.ingredientsText &&
+  /^[\x00-\x7F\s.,()%\-:;]+$/.test(product.ingredientsText);
+
+const verdict =
+  !product ? null :
+  !product.ingredientsText || !looksEnglish ? "unknown" :
+  hits.length ? "avoid" :
+  "safe";
 
   async function lookup() {
     const cleaned = barcode.replace(/\D/g, "").trim();
@@ -364,6 +368,7 @@ const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
     </main>
   );
 }
+
 
 
 
