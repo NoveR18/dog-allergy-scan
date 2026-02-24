@@ -121,9 +121,10 @@ export default function Home() {
     return findAllergenHits(product.ingredientsText, profile.allergens);
   }, [product, profile.allergens]);
 const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
-  const looksEnglish =
-  product?.ingredientsText &&
-  /^[\x00-\x7F\s.,()%\-:;]+$/.test(product.ingredientsText);
+
+const looksEnglish =
+  !!product?.ingredientsText &&
+  /^[\x00-\x7F\s.,()%\-:;'"\/]+$/.test(product.ingredientsText);
 
 const verdict =
   !product ? null :
@@ -144,7 +145,7 @@ const verdict =
     setProduct(null);
 
     try {
-      const res = await fetch(`/api/lookup?barcode=${encodeURIComponent(cleaned)}`);
+      const res = await fetch(`//lookup?barcode=${encodeURIComponent(cleaned)}`);
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         throw new Error(j?.error || `Lookup failed (${res.status})`);
@@ -353,7 +354,7 @@ const verdict =
 
                 {verdict === "unknown" && (
                   <p style={{ opacity: 0.75 }}>
-                    This means the API returned a product but didn’t provide ingredients.
+                    Ingredient information unavailable. Please check the package label.
                   </p>
                 )}
               </div>
@@ -368,6 +369,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
