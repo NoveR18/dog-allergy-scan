@@ -309,29 +309,38 @@ const verdict =
                   </div>
                 </div>
 
-                <div
-                  className={clsx()}
-                  style={{
-                    padding: "8px 12px",
-                    borderRadius: 999,
-                    border: "1px solid #ddd",
-                    background:
-                      verdict === "safe" ? "#eafff3" :
-                      verdict === "avoid" ? "#ffecec" :
-                      "#fff7e6",
-                    fontWeight: 800,
-                  }}
-                >
-                  {verdict === "safe" && "✅ SAFE"}
-                  {verdict === "avoid" && "❌ AVOID"}
-                  {verdict === "unknown" && "⚠️ UNKNOWN"}
-                </div>
+               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+  <div
+    className={clsx()}
+    style={{
+      padding: "8px 12px",
+      borderRadius: 999,
+      border: "1px solid #ddd",
+      background:
+        verdict === "safe" ? "#eafff3" :
+        verdict === "avoid" ? "#ffecec" :
+        "#fff7e6",
+      fontWeight: 800,
+    }}
+  >
+    {verdict === "safe" && "✅ SAFE"}
+    {verdict === "avoid" && "❌ AVOID"}
+    {verdict === "unknown" && "⚠️ UNKNOWN"}
+  </div>
+
+  {verdict === "unknown" && (
+    <div style={{ marginTop: 6, fontSize: 13, opacity: 0.8, textAlign: "right", maxWidth: 260 }}>
+      We couldn’t confidently verify this ingredient list in English.
+    </div>
+  )}
+</div>
                 
               {verdict === "unknown" && (
-  <div style={{ marginTop: 8, fontSize: 13, opacity: 0.8 }}>
+  <div style={{ marginTop: 8, fontSize: 13, opacity: 0.8, textAlign: "right", maxWidth: 260 }}>
     We couldn’t confidently verify this ingredient list in English.
   </div>
 )}
+                
               </div>
               
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
@@ -374,6 +383,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
