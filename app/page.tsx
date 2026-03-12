@@ -145,7 +145,7 @@ const verdict =
     setProduct(null);
 
     try {
-      const res = await fetch(`//lookup?barcode=${encodeURIComponent(cleaned)}`);
+      const res = await fetch(`/api/lookup?barcode=${encodeURIComponent(cleaned)}`);
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         throw new Error(j?.error || `Lookup failed (${res.status})`);
@@ -368,6 +368,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
