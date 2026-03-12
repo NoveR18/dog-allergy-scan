@@ -143,7 +143,37 @@ useEffect(() => {
       const text = result.getText().replace(/\D/g, "");
       if (text) {
         setBarcode(text);
-        setIsScanning(false);
+setIsScanning(false);
+
+setTimeout(() => {
+  setBarcode(text);
+}, 0);
+
+setTimeout(() => {
+  const cleaned = text.replace(/\D/g, "");
+  if (!cleaned) return;
+
+  setStatus("loading");
+  setError("");
+  setProduct(null);
+
+  fetch(`/api/lookup?barcode=${encodeURIComponent(cleaned)}`)
+    .then(async (res) => {
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j?.error || `Lookup failed (${res.status})`);
+      }
+      return res.json();
+    })
+    .then((j: Product) => {
+      setProduct(j);
+      setStatus("idle");
+    })
+    .catch(() => {
+      setStatus("error");
+      setError("Scan lookup failed.");
+    });
+}, 0);
       }
     }
   });
@@ -485,6 +515,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
