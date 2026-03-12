@@ -326,7 +326,12 @@ const verdict =
                   {verdict === "avoid" && "❌ AVOID"}
                   {verdict === "unknown" && "⚠️ UNKNOWN"}
                 </div>
-              </div>
+                
+              {verdict === "unknown" && (
+  <div style={{ marginTop: 8, fontSize: 13, opacity: 0.8 }}>
+    We couldn’t confidently verify this ingredient list in English.
+  </div>
+)}
               
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
@@ -368,6 +373,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
