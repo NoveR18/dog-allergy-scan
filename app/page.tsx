@@ -118,7 +118,38 @@ const videoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     saveProfile(profile);
   }, [profile]);
+  
+useEffect(() => {
+  if (!isScanning || !videoRef.current) return;
 
+  let stream: MediaStream | null = null;
+
+  async function startCamera() {
+    try {
+      setScanError("");
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false,
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+    } catch (err) {
+      setScanError("Could not access camera.");
+    }
+  }
+
+  startCamera();
+
+  return () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+  };
+}, [isScanning]);
+  
   const hits = useMemo(() => {
     if (!product?.ingredientsText) return [];
     return findAllergenHits(product.ingredientsText, profile.allergens);
@@ -442,6 +473,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
