@@ -303,6 +303,51 @@ const verdict =
             </button>
           </div>
 
+          {isScanning && (
+  <div
+    style={{
+      marginTop: 12,
+      border: "1px solid #ddd",
+      borderRadius: 12,
+      padding: 12,
+      background: "#fafafa",
+    }}
+  >
+    <div style={{ fontWeight: 800, marginBottom: 8 }}>Scanner</div>
+
+    <video
+      ref={videoRef}
+      style={{
+        width: "100%",
+        maxWidth: 420,
+        borderRadius: 12,
+        background: "black",
+      }}
+      muted
+      playsInline
+    />
+
+    <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <button
+        type="button"
+        onClick={() => setIsScanning(false)}
+        style={{
+          padding: "10px 14px",
+          borderRadius: 12,
+          border: "1px solid #ddd",
+          background: "white",
+          cursor: "pointer",
+        }}
+      >
+        Close Scanner
+      </button>
+    </div>
+
+    {scanError && (
+      <p style={{ marginTop: 10, color: "crimson" }}>{scanError}</p>
+    )}
+  </div>
+)}
           {status === "error" && (
             <p style={{ marginTop: 12, color: "crimson" }}>{error}</p>
           )}
@@ -397,6 +442,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
