@@ -335,12 +335,6 @@ const verdict =
   )}
 </div>
                 
-              {verdict === "unknown" && (
-  <div style={{ marginTop: 8, fontSize: 13, opacity: 0.8, textAlign: "right", maxWidth: 260 }}>
-    We couldn’t confidently verify this ingredient list in English.
-  </div>
-)}
-                
               </div>
               
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
@@ -383,6 +377,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
