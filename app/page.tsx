@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { BrowserMultiFormatReader } from "@zxing/browser";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
 import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
@@ -133,9 +134,20 @@ useEffect(() => {
       });
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+  videoRef.current.srcObject = stream;
+  await videoRef.current.play();
+
+  const reader = new BrowserMultiFormatReader();
+  reader.decodeFromVideoElement(videoRef.current, (result, error) => {
+    if (result) {
+      const text = result.getText().replace(/\D/g, "");
+      if (text) {
+        setBarcode(text);
+        setIsScanning(false);
       }
+    }
+  });
+}
     } catch (err) {
       setScanError("Could not access camera.");
     }
@@ -473,6 +485,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
