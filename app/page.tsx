@@ -154,7 +154,6 @@ const verdict =
       setProduct(j);
       setStatus("idle");
     } catch (e: any) {
-      setError("Product found, but ingredient text isn’t available in English yet.");
       setStatus("error");
     }
   }
@@ -369,6 +368,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
