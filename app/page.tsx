@@ -332,6 +332,7 @@ const verdict =
     We couldn’t confidently verify this ingredient list in English.
   </div>
 )}
+              </div>
               
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
@@ -373,6 +374,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
