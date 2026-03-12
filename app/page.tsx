@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
 import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
 import { clsx } from "@/lib/ui";
@@ -105,6 +105,9 @@ export default function Home() {
   const [product, setProduct] = useState<Product | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
+  const [isScanning, setIsScanning] = useState(false);
+const [scanError, setScanError] = useState("");
+const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const p = loadProfile();
@@ -390,6 +393,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
