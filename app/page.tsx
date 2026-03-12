@@ -269,6 +269,19 @@ const verdict =
               {status === "loading" ? "Searching..." : "Search"}
             </button>
 
+<button
+  type="button"
+  style={{
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid #ddd",
+    background: "white",
+    cursor: "pointer",
+  }}
+>
+  Scan
+</button>
+            
             <button
               onClick={clearResults}
               style={{
@@ -377,6 +390,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
