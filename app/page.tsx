@@ -429,17 +429,17 @@ const verdict =
   }}
 >
   <div
-    style={{
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: "50%",
-      height: 2,
-      background: "rgba(255,0,0,0.9)",
-      boxShadow: "0 0 8px rgba(255,0,0,0.8)",
-      transform: "translateY(-50%)",
-    }}
-  />
+  style={{
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 2,
+    background: "rgba(255,0,0,0.9)",
+    boxShadow: "0 0 8px rgba(255,0,0,0.8)",
+    animation: "scanline 2s linear infinite",
+  }}
+/>
+      
 </div>
   </div>
 </div>
@@ -578,6 +578,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
