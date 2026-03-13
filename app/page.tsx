@@ -386,7 +386,7 @@ const verdict =
       background: "#fafafa",
     }}
   >
-    <div style={{ fontWeight: 800, marginBottom: 8 }}>Scanner</div>
+    <div style={{ fontWeight: 800, marginBottom: 8 }}>Scanning… point your camera at a barcode</div>
 
     <video
       ref={videoRef}
@@ -515,6 +515,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
