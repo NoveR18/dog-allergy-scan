@@ -474,7 +474,23 @@ const verdict =
 </div>
                 
               </div>
-              
+              <button
+  type="button"
+  onClick={() => {
+    setScanError("");
+    setIsScanning(true);
+  }}
+  style={{
+    marginTop: 12,
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid #ddd",
+    background: "white",
+    cursor: "pointer",
+  }}
+>
+  Scan another
+</button>
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
                   <>
@@ -515,6 +531,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
