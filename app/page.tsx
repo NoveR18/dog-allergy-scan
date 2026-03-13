@@ -388,17 +388,61 @@ const verdict =
   >
     <div style={{ fontWeight: 800, marginBottom: 8 }}>Scanning… point your camera at a barcode</div>
 
-    <video
-      ref={videoRef}
-      style={{
-        width: "100%",
-        maxWidth: 420,
-        borderRadius: 12,
-        background: "black",
-      }}
-      muted
-      playsInline
-    />
+    <div
+  style={{
+    position: "relative",
+    width: "100%",
+    maxWidth: 420,
+  }}
+>
+  <video
+    ref={videoRef}
+    style={{
+      width: "100%",
+      borderRadius: 12,
+      background: "black",
+      display: "block",
+    }}
+    muted
+    playsInline
+  />
+
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      pointerEvents: "none",
+    }}
+  >
+    <div
+  style={{
+    width: "80%",
+    height: 110,
+    border: "2px solid rgba(255,255,255,0.9)",
+    borderRadius: 12,
+    boxShadow: "0 0 0 9999px rgba(0,0,0,0.2)",
+    position: "relative",
+    overflow: "hidden",
+  }}
+>
+  <div
+    style={{
+      position: "absolute",
+      left: 0,
+      right: 0,
+      top: "50%",
+      height: 2,
+      background: "rgba(255,0,0,0.9)",
+      boxShadow: "0 0 8px rgba(255,0,0,0.8)",
+      transform: "translateY(-50%)",
+    }}
+  />
+</div>
+  </div>
+</div>
 
     <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
       <button
@@ -534,6 +578,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
