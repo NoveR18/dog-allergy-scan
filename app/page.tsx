@@ -348,9 +348,11 @@ const verdict =
 <button
   type="button"
   onClick={() => {
-    setScanError("");
-    setIsScanning(true);
-  }}
+  setScanError("");
+  setProduct(null);
+  setBarcode("");
+  setIsScanning(true);
+}}
   style={{
     padding: "10px 14px",
     borderRadius: 12,
@@ -531,6 +533,7 @@ const verdict =
     </main>
   );
 }
+
 
 
 
