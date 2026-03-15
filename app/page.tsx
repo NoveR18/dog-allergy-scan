@@ -153,14 +153,12 @@ useEffect(() => {
   setProduct(localProduct);
   setStatus("idle");
   setIsScanning(false);
-  reader.reset();
   return;
 }
       
       if (text) {
         setBarcode(text);
 setIsScanning(false);
-        reader.reset();
 
 setTimeout(() => {
   setBarcode(text);
