@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
 import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
 import { clsx } from "@/lib/ui";
+import { productDirectory } from "../lib/productDirectory";
 
 type Product = {
   barcode: string;
@@ -15,6 +16,10 @@ type Product = {
   note?: string;
   source: string;
 };
+
+function findProductInDirectory(barcode: string) {
+  return productDirectory.find((product) => product.barcode === barcode);
+}
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -141,6 +146,8 @@ useEffect(() => {
   reader.decodeFromVideoElement(videoRef.current, (result, error) => {
     if (result) {
       const text = result.getText().replace(/\D/g, "");
+      const localProduct = findProductInDirectory(text);
+      console.log("Local product lookup:", localProduct);
       if (text) {
         setBarcode(text);
 setIsScanning(false);
