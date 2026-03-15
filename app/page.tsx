@@ -148,6 +148,7 @@ useEffect(() => {
       const text = result.getText().replace(/\D/g, "");
       const localProduct = findProductInDirectory(text);
       console.log("Local product lookup:", localProduct);
+      console.log("Scanned text:", text);
       if (localProduct) {
   setProduct(localProduct);
   setStatus("idle");
