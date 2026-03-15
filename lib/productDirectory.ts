@@ -2,7 +2,7 @@ export const productDirectory = [
   {
     barcode: "000000000000",
     brand: "Example Brand",
-    productName: "Example Formula",
+    Name: "Example Formula",
     sizeValue: 22,
     sizeUnit: "lb",
     imageUrl: "",
