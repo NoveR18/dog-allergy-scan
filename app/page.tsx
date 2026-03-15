@@ -225,7 +225,12 @@ const verdict =
     
 const localProduct = findProductInDirectory(cleaned);
     console.log("Manual local product lookup:", localProduct);
-    
+
+    if (localProduct) {
+  setProduct(localProduct);
+  setStatus("idle");
+  return;
+}
     setStatus("loading");
     setError("");
     setProduct(null);
