@@ -222,7 +222,10 @@ const verdict =
       setStatus("error");
       return;
     }
-
+    
+const localProduct = findProductInDirectory(cleaned);
+    console.log("Manual local product lookup:", localProduct);
+    
     setStatus("loading");
     setError("");
     setProduct(null);
