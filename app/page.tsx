@@ -264,6 +264,8 @@ await saveProduct(localProduct);
       }
       const j = (await res.json()) as Product;
       setProduct(j);
+      console.log("Saving API product to DB:", j);
+   await saveProduct(j);
       setStatus("idle");
     } catch (e: any) {
       setStatus("error");
