@@ -9,10 +9,12 @@ export const saveProduct = async (product: Product): Promise<void> => {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite");
     const store = tx.objectStore(STORE_NAME);
-    const request = store.put(product);
 
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject("Failed to save product");
+    store.put(product);
+
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject("Failed to save product");
+    tx.onabort = () => reject("Save transaction was aborted");
   });
 };
 
