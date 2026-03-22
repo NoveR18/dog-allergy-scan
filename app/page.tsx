@@ -17,9 +17,6 @@ type Product = {
   source: string;
 };
 
-function findProductInDirectory(barcode: string) {
-  return productDirectory.find((product) => product.barcode === barcode);
-}
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
