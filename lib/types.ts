@@ -68,7 +68,7 @@ export type ScanHistoryItem = {
   id: string;
   barcode: string;
   scannedAt: string;
-  productName: string;
+  name: string;
   brand: string;
   verdict: "SAFE" | "AVOID" | "UNKNOWN";
   matchedAllergens: string[];
