@@ -193,10 +193,11 @@ setTimeout(() => {
       }
       return res.json();
     })
-    .then((j: Product) => {
-      setProduct(j);
-      setStatus("idle");
-    })
+    .then(async (j: Product) => {
+  setProduct(j);
+  await saveProduct(j);
+  setStatus("idle");
+})
     .catch(() => {
       setStatus("error");
       setError("Scan lookup failed.");
