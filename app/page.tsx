@@ -6,7 +6,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
 import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
 import { clsx } from "@/lib/ui";
-import { productDirectory } from "../lib/productDirectory";
 
 type Product = {
   barcode: string;
