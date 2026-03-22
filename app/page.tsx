@@ -167,6 +167,7 @@ await saveProduct(localProduct);
   return;
 }
 setStatus("loading");
+console.log("Reached API fallback with text:", text);
       
       if (text) {
         setBarcode(text);
