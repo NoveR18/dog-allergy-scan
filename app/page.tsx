@@ -193,7 +193,7 @@ setTimeout(() => {
       }
       return res.json();
     })
-    .then(async (j: Product) => {
+    .then(async (j: import("@/lib/directory/types").Product) => {
   setProduct(j);
   await saveProduct(j);
   setStatus("idle");
