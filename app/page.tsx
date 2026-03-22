@@ -226,7 +226,7 @@ const verdict =
   async function lookup() {
     const cleaned = barcode.replace(/\D/g, "").trim();
     if (!cleaned) {
-      setError("Enter a barcode/UPC/EAN (numbers only).");
+      setError("Enter a barcode or EAN (numbers only).");
       setStatus("error");
       return;
     }
@@ -292,7 +292,7 @@ const localProduct = findProductInDirectory(cleaned);
         <div>
           <h1 style={{ margin: 0, fontSize: 28 }}>Dog Food Allergy Scanner</h1>
           <p style={{ margin: "8px 0 0", opacity: 0.75 }}>
-            Add your dog’s allergens, then look up foods by UPC to see what’s safe.
+            Add your dog’s allergens, then look up foods by barcode to see what’s safe.
           </p>
         </div>
 
