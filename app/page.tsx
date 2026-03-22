@@ -351,7 +351,7 @@ const localProduct = findProductInDirectory(cleaned);
         </Card>
 
         <Card>
-          <h2 style={{ marginTop: 0, marginBottom: 8 }}>Lookup by barcode (UPC/EAN)</h2>
+          <h2 style={{ marginTop: 0, marginBottom: 8 }}>Look up by barcode</h2>
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <input
