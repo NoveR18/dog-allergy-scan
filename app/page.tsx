@@ -250,9 +250,8 @@ const localProduct = await getProductByBarcode(cleaned);
     if (localProduct) {
   setProduct(localProduct);
   console.log("Saving product to DB:", localProduct);
-await saveProduct(localProduct);
+  await saveProduct(localProduct);
   setStatus("idle");
-  return;
 }
     setStatus("loading");
     setError("");
