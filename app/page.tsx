@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { getProductByBarcode, saveProduct } from "@/lib/directory/directoryService";
+import { getProductByBarcode, saveProduct, getAllProducts } from "@/lib/directory/directoryService";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
@@ -121,6 +121,17 @@ const videoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     saveProfile(profile);
   }, [profile]);
+
+  useEffect(() => {
+  const loadLastProduct = async () => {
+    const products = await getAllProducts();
+    if (products.length > 0) {
+      setProduct(products[products.length - 1]);
+    }
+  };
+
+  loadLastProduct();
+}, []);
   
 useEffect(() => {
   if (!isScanning || !videoRef.current) return;
