@@ -125,10 +125,11 @@ const videoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
   const loadLastProduct = async () => {
     const products = await getAllProducts();
+    console.log("Loaded products from IndexedDB:", products);
+
     if (products.length > 0) {
-  console.log("Loaded products from IndexedDB:", products);
-  setProduct(products[products.length - 1]);
-}
+      setProduct(products[products.length - 1]);
+    }
   };
 
   loadLastProduct();
