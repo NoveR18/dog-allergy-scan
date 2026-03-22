@@ -15,12 +15,12 @@ export const openDB = (): Promise<IDBDatabase> => {
 
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, {
-          keyPath: "upc",
+          keyPath: "barcode",
         });
 
         store.createIndex("brand", "brand", { unique: false });
         store.createIndex("name", "name", { unique: false });
-        store.createIndex("type", "type", { unique: false });
+        store.createIndex("productCategory", "productCategory", { unique: false });
       }
     };
   });
