@@ -126,8 +126,9 @@ const videoRef = useRef<HTMLVideoElement | null>(null);
   const loadLastProduct = async () => {
     const products = await getAllProducts();
     if (products.length > 0) {
-      setProduct(products[products.length - 1]);
-    }
+  console.log("Loaded products from IndexedDB:", products);
+  setProduct(products[products.length - 1]);
+}
   };
 
   loadLastProduct();
