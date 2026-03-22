@@ -259,6 +259,7 @@ await saveProduct(localProduct);
     setProduct(null);
 
     try {
+      console.log("About to fetch API for:", cleaned);
       const res = await fetch(`/api/lookup?barcode=${encodeURIComponent(cleaned)}`);
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
