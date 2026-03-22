@@ -231,7 +231,7 @@ const verdict =
       return;
     }
     
-const localProduct = findProductInDirectory(cleaned);
+const localProduct = await getProductByBarcode(cleaned);
     console.log("Manual local product lookup:", localProduct);
 
     if (localProduct) {
