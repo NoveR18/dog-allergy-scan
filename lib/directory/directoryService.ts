@@ -16,13 +16,15 @@ export const saveProduct = async (product: Product): Promise<void> => {
   });
 };
 
-export const getProductByUPC = async (upc: string): Promise<Product | null> => {
+export const getProductByBarcode = async (
+  barcode: string
+): Promise<Product | null> => {
   const db = await openDB();
 
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readonly");
     const store = tx.objectStore(STORE_NAME);
-    const request = store.get(upc);
+    const request = store.get(barcode);
 
     request.onsuccess = () => resolve(request.result || null);
     request.onerror = () => reject("Failed to fetch product");
@@ -42,13 +44,13 @@ export const getAllProducts = async (): Promise<Product[]> => {
   });
 };
 
-export const deleteProduct = async (upc: string): Promise<void> => {
+export const deleteProduct = async (barcode: string): Promise<void> => {
   const db = await openDB();
 
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite");
     const store = tx.objectStore(STORE_NAME);
-    const request = store.delete(upc);
+    const request = store.delete(barcode);
 
     request.onsuccess = () => resolve();
     request.onerror = () => reject("Failed to delete product");
