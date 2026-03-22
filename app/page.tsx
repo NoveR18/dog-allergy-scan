@@ -166,6 +166,7 @@ await saveProduct(localProduct);
   setIsScanning(false);
   return;
 }
+setStatus("loading");
       
       if (text) {
         setBarcode(text);
