@@ -12,6 +12,8 @@ export type ProductCategory =
 
 export type Species = "dog" | "cat";
 
+export type BarcodeType = "UPC" | "EAN" | "GTIN" | "UNKNOWN";
+
 export type AffiliateLink = {
   retailer: string;
   url: string;
@@ -20,6 +22,7 @@ export type AffiliateLink = {
 
 export type Product = {
   barcode: string;
+  barcodeType: BarcodeType;
   brand: string;
   name: string;
   speciesTargets: Species[];
