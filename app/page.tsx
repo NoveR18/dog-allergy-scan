@@ -140,7 +140,7 @@ useEffect(() => {
   await videoRef.current.play();
 
   const reader = new BrowserMultiFormatReader();
-  reader.decodeFromVideoElement(videoRef.current, (result, error) => {
+  reader.decodeFromVideoElement(videoRef.current, async (result, error) => {
     if (result) {
       const text = result.getText().replace(/\D/g, "");
       const localProduct = await getProductByBarcode(text);
