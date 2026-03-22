@@ -148,6 +148,7 @@ useEffect(() => {
       console.log("Scanned text:", text);
       if (localProduct) {
   setProduct(localProduct);
+  await saveProduct(localProduct);
   setStatus("idle");
   setIsScanning(false);
   return;
@@ -233,6 +234,7 @@ const localProduct = await getProductByBarcode(cleaned);
 
     if (localProduct) {
   setProduct(localProduct);
+  await saveProduct(localProduct);
   setStatus("idle");
   return;
 }
