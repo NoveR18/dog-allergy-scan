@@ -163,7 +163,6 @@ useEffect(() => {
   console.log("Saving product to DB:", localProduct);
 await saveProduct(localProduct);
   setStatus("idle");
-  setIsScanning(false);
   return;
 }
 setStatus("loading");
