@@ -2,7 +2,7 @@
 
 export const metadata: Metadata = {
   title: "Dog Food Allergy Scanner",
-  description: "Filter dog foods by your dog's allergens using UPC ingredient sources.",
+  description: "Filter dog foods by your dog's allergens using barcode ingredient sources.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
