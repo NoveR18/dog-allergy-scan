@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { getProductByBarcode } from "@/lib/directory/directoryService";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
