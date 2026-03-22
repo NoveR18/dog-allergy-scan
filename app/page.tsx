@@ -143,7 +143,7 @@ useEffect(() => {
   reader.decodeFromVideoElement(videoRef.current, (result, error) => {
     if (result) {
       const text = result.getText().replace(/\D/g, "");
-      const localProduct = findProductInDirectory(text);
+      const localProduct = await getProductByBarcode(text);
       console.log("Local product lookup:", localProduct);
       console.log("Scanned text:", text);
       if (localProduct) {
