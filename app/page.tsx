@@ -252,6 +252,7 @@ const looksEnglish =
 
 const verdict =
   !product ? null :
+  !profile.allergens.length ? "unknown" :
   !product.ingredientsText || !looksEnglish ? "unknown" :
   hits.length ? "avoid" :
   "safe";
@@ -582,7 +583,7 @@ const localProduct = await getProductByBarcode(cleaned);
 
   {verdict === "unknown" && (
     <div style={{ marginTop: 6, fontSize: 13, opacity: 0.8, textAlign: "right", maxWidth: 260 }}>
-      We couldn’t confidently verify this ingredient list in English.
+      We couldn’t complete a reliable check. Add allergens for your pet or ensure the ingredient list is readable in English.
     </div>
   )}
 </div>
