@@ -158,7 +158,21 @@ useEffect(() => {
   const text = result.getText().replace(/\D/g, "");
 
   // 🔊 PLAY BEEP HERE
-  new Audio("/beep.mp3").play();
+  try {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.value = 880;
+  gainNode.gain.value = 0.08;
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.08);
+} catch {}
 
   const localProduct = await getProductByBarcode(text);
   console.log("Local product lookup:", localProduct);
