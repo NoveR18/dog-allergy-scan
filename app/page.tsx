@@ -520,6 +520,8 @@ const localProduct = await getProductByBarcode(cleaned);
     />
   </div>
 </div>
+
+</div>
       
     <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
       <button
