@@ -155,17 +155,22 @@ useEffect(() => {
   const reader = new BrowserMultiFormatReader();
   reader.decodeFromVideoElement(videoRef.current, async (result, error) => {
     if (result) {
-      const text = result.getText().replace(/\D/g, "");
-      const localProduct = await getProductByBarcode(text);
-      console.log("Local product lookup:", localProduct);
-      console.log("Scanned text:", text);
-      if (localProduct) {
-  setProduct(localProduct);
-  console.log("Saving product to DB:", localProduct);
-await saveProduct(localProduct);
-  setStatus("idle");
-  return;
-}
+  const text = result.getText().replace(/\D/g, "");
+
+  // 🔊 PLAY BEEP HERE
+  new Audio("/beep.mp3").play();
+
+  const localProduct = await getProductByBarcode(text);
+  console.log("Local product lookup:", localProduct);
+  console.log("Scanned text:", text);
+
+  if (localProduct) {
+    setProduct(localProduct);
+    console.log("Saving product to DB:", localProduct);
+    await saveProduct(localProduct);
+    setStatus("idle");
+    return;
+  }
 setStatus("loading");
 console.log("Reached API fallback with text:", text);
       
