@@ -104,7 +104,7 @@ export function findAllergenHits(ingredientsText: string, allergens: string[]): 
       }
 
       // Token match (avoids many false positives)
-      if (tokenSet.has(candidate)) {
+      if (tokenSet.has(candidate) && !isNegatedCandidate(normalizedIngredients, candidate)) {
         const key = `${normalizeText(userAllergen)}::${candidate}`;
         if (!seen.has(key)) {
           seen.add(key);
