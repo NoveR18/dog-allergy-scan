@@ -68,6 +68,16 @@ export type AllergenHit = {
   kind: "token" | "phrase";
 };
 
+function isNegatedCandidate(text: string, candidate: string): boolean {
+  const escaped = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  return [
+    new RegExp(`\\b${escaped}\\s*-\\s*free\\b`, "i"),
+    new RegExp(`\\bfree\\s+of\\s+${escaped}\\b`, "i"),
+    new RegExp(`\\bno\\s+${escaped}\\b`, "i"),
+    new RegExp(`\\bwithout\\s+${escaped}\\b`, "i"),
+  ].some((pattern) => pattern.test(text));
+}
 export function findAllergenHits(ingredientsText: string, allergens: string[]): AllergenHit[] {
   const normalizedIngredients = normalizeText(ingredientsText);
   const tokens = tokenize(ingredientsText);
@@ -83,7 +93,7 @@ export function findAllergenHits(ingredientsText: string, allergens: string[]): 
     for (const candidate of expanded) {
       // Phrase match if it has spaces (e.g., "pea protein")
       if (candidate.includes(" ")) {
-        if (normalizedIngredients.includes(candidate)) {
+        if (normalizedIngredients.includes(candidate) && !isNegatedCandidate(normalizedIngredients, candidate)) {
           const key = `${normalizeText(userAllergen)}::${candidate}`;
           if (!seen.has(key)) {
             seen.add(key);
