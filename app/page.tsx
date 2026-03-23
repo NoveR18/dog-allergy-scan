@@ -625,7 +625,7 @@ const localProduct = await getProductByBarcode(cleaned);
     fontWeight: 600,
   }}
 >
-  See safe alternatives for your pet
+  See allergy-safe alternatives for your pet
 </button>
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
