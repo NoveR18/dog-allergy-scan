@@ -458,74 +458,69 @@ const localProduct = await getProductByBarcode(cleaned);
     playsInline
   />
 
+ <div
+  style={{
+    position: "absolute",
+    inset: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    pointerEvents: "none",
+  }}
+>
   <div
     style={{
-      position: "absolute",
-      inset: 0,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      pointerEvents: "none",
+      width: "90%",
+      height: 140,
+      border: "2px solid rgba(255,255,255,0.95)",
+      borderRadius: 40,
+      boxShadow: "0 0 0 9999px rgba(0,0,0,0.2)",
+      position: "relative",
+      overflow: "visible",
     }}
   >
     <div
-  style={{
-    width: "90%",
-    height: 140,
-    border: "2px solid rgba(255,255,255,0.95)",
-    borderRadius: 40,
-    boxShadow: "0 0 0 9999px rgba(0,0,0,0.2)",
-    position: "relative",
-    overflow: "visible",
-  }}
->
-  {/* LEFT BONE BUMP */}
-  <div
-    style={{
-      position: "absolute",
-      left: -20,
-      top: "50%",
-      transform: "translateY(-50%)",
-      width: 50,
-      height: 50,
-      border: "2px solid rgba(255,255,255,0.95)",
-      borderRadius: "50%",
-      background: "transparent",
-    }}
-  />
+      style={{
+        position: "absolute",
+        left: -20,
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: 50,
+        height: 50,
+        border: "2px solid rgba(255,255,255,0.95)",
+        borderRadius: "50%",
+        background: "transparent",
+      }}
+    />
 
-  {/* RIGHT BONE BUMP */}
-  <div
-    style={{
-      position: "absolute",
-      right: -20,
-      top: "50%",
-      transform: "translateY(-50%)",
-      width: 50,
-      height: 50,
-      border: "2px solid rgba(255,255,255,0.95)",
-      borderRadius: "50%",
-      background: "transparent",
-    }}
-  />
-</div>
+    <div
+      style={{
+        position: "absolute",
+        right: -20,
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: 50,
+        height: 50,
+        border: "2px solid rgba(255,255,255,0.95)",
+        borderRadius: "50%",
+        background: "transparent",
+      }}
+    />
 
-  <div
-  style={{
-    position: "absolute",
-    left: 0,
-    right: 0,
-    height: 2,
-    background: "rgba(255,0,0,0.9)",
-    boxShadow: "0 0 8px rgba(255,0,0,0.8)",
-    animation: "scanline 2s linear infinite",
-  }}
-/>
-      
-</div>
+    <div
+      style={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        height: 2,
+        background: "rgba(255,0,0,0.9)",
+        boxShadow: "0 0 8px rgba(255,0,0,0.8)",
+        animation: "scanline 2s linear infinite",
+      }}
+    />
   </div>
 </div>
-
+      
     <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
       <button
         type="button"
