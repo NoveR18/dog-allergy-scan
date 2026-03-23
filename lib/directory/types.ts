@@ -5,9 +5,9 @@
 export type ProductCategory =
   | "dry_food"
   | "wet_food"
-  | "treats"
   | "frozen_raw"
   | "freeze_dried_dehydrated_air_dried"
+  | "treats"
   | "supplements"
   | "allergy_tests"
   | "dna_tests";
