@@ -327,14 +327,14 @@ const localProduct = await getProductByBarcode(cleaned);
       
       <header style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 28 }}>Dog Food Allergy Scanner</h1>
+          <h1 style={{ margin: 0, fontSize: 28 }}>Pet Food Allergy Scanner</h1>
           <p style={{ margin: "8px 0 0", opacity: 0.75 }}>
-            Add your dog’s allergens, then look up foods by barcode to see what’s safe.
+            Add your pet’s allergens, then look up foods by barcode to see what’s safe.
           </p>
         </div>
 
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <label style={{ fontWeight: 600, opacity: 0.85 }}>Dog name</label>
+          <label style={{ fontWeight: 600, opacity: 0.85 }}>Pet name</label>
           <input
             value={profile.dogName}
             onChange={(e) => setProfile({ ...profile, dogName: e.target.value })}
@@ -611,7 +611,7 @@ const localProduct = await getProductByBarcode(cleaned);
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
                   <>
-                    <div style={{ fontWeight: 800 }}>Matched allergens for {profile.dogName}:</div>
+                    <div style={{ fontWeight: 800 }}>Matched allergens for your pet ({profile.dogName}):</div>
                     <ul style={{ marginTop: 8 }}>
                       {hits.map((h) => (
   <li key={h.allergen}>
@@ -621,6 +621,13 @@ const localProduct = await getProductByBarcode(cleaned);
                     </ul>
                   </>
                 )}
+                {verdict === "safe" && (
+  <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
+    <div style={{ fontWeight: 800 }}>
+      No allergens from your saved pet allergy list were detected for {profile.dogName}.
+    </div>
+  </div>
+)}
 
                 <div style={{ marginTop: 10 }}>
                   <div style={{ fontWeight: 800 }}>Ingredients</div>
