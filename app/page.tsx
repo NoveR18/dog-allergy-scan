@@ -470,43 +470,15 @@ const localProduct = await getProductByBarcode(cleaned);
 >
   <div
     style={{
-      width: "90%",
-      height: 140,
-      border: "2px solid rgba(255,255,255,0.95)",
-      borderRadius: 40,
-      boxShadow: "0 0 0 9999px rgba(0,0,0,0.2)",
+      width: "85%",
+      height: 120,
+      border: "2px solid rgba(255,255,255,0.9)",
+      borderRadius: 12,
+      boxShadow: "0 0 0 9999px rgba(0,0,0,0.25)",
       position: "relative",
-      overflow: "visible",
+      overflow: "hidden",
     }}
   >
-    <div
-      style={{
-        position: "absolute",
-        left: -20,
-        top: "50%",
-        transform: "translateY(-50%)",
-        width: 50,
-        height: 50,
-        border: "2px solid rgba(255,255,255,0.95)",
-        borderRadius: "50%",
-        background: "transparent",
-      }}
-    />
-
-    <div
-      style={{
-        position: "absolute",
-        right: -20,
-        top: "50%",
-        transform: "translateY(-50%)",
-        width: 50,
-        height: 50,
-        border: "2px solid rgba(255,255,255,0.95)",
-        borderRadius: "50%",
-        background: "transparent",
-      }}
-    />
-
     <div
       style={{
         position: "absolute",
