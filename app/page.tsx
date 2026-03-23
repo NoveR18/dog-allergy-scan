@@ -611,6 +611,9 @@ const localProduct = await getProductByBarcode(cleaned);
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
                   <>
+                    <div style={{ marginBottom: 6 }}>
+  This product contains ingredients that match your pet’s allergy list.
+</div>
                     <div style={{ fontWeight: 800 }}>Matched allergens for your pet ({profile.dogName}):</div>
                     <ul style={{ marginTop: 8 }}>
                       {hits.map((h) => (
