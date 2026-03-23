@@ -470,8 +470,8 @@ const localProduct = await getProductByBarcode(cleaned);
 >
   <div
     style={{
-      width: "85%",
-      height: 120,
+      width: "95%",
+      height: 180,
       border: "2px solid rgba(255,255,255,0.9)",
       borderRadius: 12,
       boxShadow: "0 0 0 9999px rgba(0,0,0,0.25)",
