@@ -609,6 +609,24 @@ const localProduct = await getProductByBarcode(cleaned);
 >
   Scan another
 </button>
+              <button
+  type="button"
+  onClick={() => {
+    console.log("See safe alternatives clicked");
+  }}
+  style={{
+    marginTop: 10,
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: "1px solid #ddd",
+    background: "#f8f8f8",
+    cursor: "pointer",
+    fontWeight: 600,
+  }}
+>
+  See safe alternatives for your pet
+</button>
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
                   <>
