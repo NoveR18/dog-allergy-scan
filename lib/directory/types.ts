@@ -6,6 +6,8 @@ export type ProductCategory =
   | "dry_food"
   | "wet_food"
   | "treats"
+  | "frozen_raw"
+  | "freeze_dried_dehydrated_air_dried"
   | "supplements"
   | "allergy_tests"
   | "dna_tests";
@@ -27,6 +29,7 @@ export type Product = {
   name: string;
   speciesTargets: Species[];
   productCategory: ProductCategory;
+  productSubcategory: string | null;
   sizeValue: number | null;
   sizeUnit:
     | "lb"
