@@ -114,7 +114,7 @@ export function findAllergenHits(ingredientsText: string, allergens: string[]): 
       }
 
       // Safe fallback: allow substring match only for longer candidates (reduces "pea"->random matches)
-      if (candidate.length >= 5 && normalizedIngredients.includes(candidate)) {
+      if (candidate.length >= 5 && normalizedIngredients.includes(candidate) && !isNegatedCandidate(normalizedIngredients, candidate)) {
         const key = `${normalizeText(userAllergen)}::${candidate}`;
         if (!seen.has(key)) {
           seen.add(key);
