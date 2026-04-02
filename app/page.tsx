@@ -630,16 +630,13 @@ style={{
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
                   <>
-                    <div style={{ marginBottom: 6 }}>
-  This product contains ingredients that match your pet’s allergy list.
-</div>
 <div
   style={{
-  fontWeight: 800,
-  color: "#dc2626",
-}}
+    fontWeight: 600,
+    color: "#dc2626",
+  }}
 >
-  Matched allergens for your pet ({profile.dogName}):
+  This product contains ingredients that match your pet’s allergy list.
 </div>
                     <ul style={{ marginTop: 8, marginBottom: 16 }}>
                       {hits.map((h) => (
@@ -653,13 +650,19 @@ style={{
                 {verdict === "safe" && (
   <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
     <div style={{ fontWeight: 800 }}>
-      No allergens from your saved pet allergy list were detected for {profile.dogName}.
-    </div>
+      <div
+  style={{
+  fontWeight: 600,
+  color: "#16a34a",
+}}
+>
+  No allergens from your saved pet allergy list were detected for {profile.dogName}.
+</div>
   </div>
 )}
 
-                <div style={{ marginTop: 10 }}>
-                  <div style={{ fontWeight: 800 }}>Ingredients</div>
+                <div style={{ marginTop: 20 }}>
+  <div style={{ fontWeight: 800 }}>Ingredients</div>
                   <p style={{ whiteSpace: "pre-wrap", opacity: 0.9, marginTop: 4 }}>
                     {product.ingredientsText
   ? highlightText(product.ingredientsText, highlightTerms)
@@ -668,9 +671,14 @@ style={{
                 </div>
 
                 {verdict === "unknown" && (
-                  <p style={{ opacity: 0.75 }}>
-                    Ingredient information unavailable. Please check the package label.
-                  </p>
+<div
+  style={{
+    fontWeight: 600,
+    color: "#d97706",
+  }}
+>
+  Ingredient information unavailable. Please check the package label.
+</div>
                 )}
               </div>
             </div>
