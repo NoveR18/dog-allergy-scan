@@ -640,15 +640,14 @@ style={{
                 )}
                 {verdict === "safe" && (
   <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
-    <div style={{ fontWeight: 800 }}>
-      <div
-  style={{
-  fontWeight: 600,
-  color: "#16a34a",
-}}
->
-  No allergens from your saved pet allergy list were detected for {profile.dogName}.
-</div>
+    <div
+      style={{
+        fontWeight: 600,
+        color: "#16a34a",
+      }}
+    >
+      No allergens from your saved pet allergy list were detected for {profile.dogName}.
+    </div>
   </div>
 )}
 
