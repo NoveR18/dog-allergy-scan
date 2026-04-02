@@ -635,14 +635,9 @@ style={{
 </div>
 <div
   style={{
-    fontWeight: 800,
-    color:
-      verdict === "safe"
-        ? "#16a34a"
-        : verdict === "avoid"
-        ? "#dc2626"
-        : "#d97706",
-  }}
+  fontWeight: 800,
+  color: "#dc2626",
+}}
 >
   Matched allergens for your pet ({profile.dogName}):
 </div>
