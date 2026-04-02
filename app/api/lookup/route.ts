@@ -1,20 +1,11 @@
-﻿import { NextResponse } from "next/server";
-
-type NormalizedProduct = {
-  barcode: string;
-  name?: string;
-  brand?: string;
-  imageUrl?: string;
-  ingredientsText?: string;
-  note?: string;
-  source: "go-upc" | "openpetfoodfacts" | "openfoodfacts" | "none";
-};
+import { ApiLookupProduct } from "@/lib/directory/types";
+import { NextResponse } from "next/server";
 
 function cleanBarcode(code: string) {
   return (code || "").replace(/\D/g, "").trim();
 }
 
-async function fetchGoUPC(barcode: string): Promise<NormalizedProduct | null> {
+async function fetchGoUPC(barcode: string): Promise<ApiLookupProduct | null> {
   const key = process.env.GO_UPC_API_KEY;
   if (!key) return null;
 
@@ -40,7 +31,7 @@ async function fetchGoUPC(barcode: string): Promise<NormalizedProduct | null> {
   };
 }
 
-async function fetchOpenPetFoodFacts(barcode: string): Promise<NormalizedProduct | null> {
+async function fetchOpenPetFoodFacts(barcode: string): Promise<ApiLookupProduct | null> {
   const url = `https://world.openpetfoodfacts.org/api/v0/product/${encodeURIComponent(barcode)}.json`;
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return null;
@@ -62,7 +53,7 @@ async function fetchOpenPetFoodFacts(barcode: string): Promise<NormalizedProduct
   };
 }
 
-async function fetchOpenFoodFacts(barcode: string): Promise<NormalizedProduct | null> {
+async function fetchOpenFoodFacts(barcode: string): Promise<ApiLookupProduct | null> {
   const url = `https://world.openfoodfacts.org/api/v0/product/${encodeURIComponent(barcode)}.json`;
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return null;
