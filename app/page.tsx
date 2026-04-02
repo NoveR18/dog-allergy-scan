@@ -179,12 +179,13 @@ useEffect(() => {
   console.log("Scanned text:", text);
 
   if (localProduct) {
-    setProduct(localProduct);
-    console.log("Saving product to DB:", localProduct);
-    await saveProduct(localProduct);
-    setStatus("idle");
-    return;
-  }
+  setProduct(localProduct);
+  console.log("Saving product to DB:", localProduct);
+  await saveProduct(localProduct);
+  setStatus("idle");
+  setIsScanning(false); // ✅ ADD THIS LINE
+  return;
+}
 setStatus("loading");
 console.log("Reached API fallback with text:", text);
       
