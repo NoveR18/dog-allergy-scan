@@ -491,16 +491,17 @@ const localProduct = await getProductByBarcode(cleaned);
     }}
   >
     <div
-      style={{
-        position: "absolute",
-        left: 0,
-        right: 0,
-        height: 2,
-        background: "rgba(255,0,0,0.9)",
-        boxShadow: "0 0 8px rgba(255,0,0,0.8)",
-        animation: "scanline 2s linear infinite",
-      }}
-    />
+  style={{
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 2,
+    background: "rgba(255,0,0,0.9)",
+    boxShadow: "0 0 8px rgba(255,0,0,0.8)",
+    top: "50%",
+    transform: "translateY(-50%)",
+  }}
+/>
   </div>
 </div>
 
@@ -651,16 +652,7 @@ style={{
   </div>
 )}
 
-                <div style={{ marginTop: 20 }}>
-  <div style={{ fontWeight: 800 }}>Ingredients</div>
-                  <p style={{ whiteSpace: "pre-wrap", opacity: 0.9, marginTop: 4 }}>
-                    {product.ingredientsText
-  ? highlightText(product.ingredientsText, highlightTerms)
-  : "No ingredient text returned from sources."}
-                  </p>
-                </div>
-
-                {verdict === "unknown" && (
+{verdict === "unknown" && (
 <div
   style={{
     fontWeight: 600,
@@ -669,7 +661,15 @@ style={{
 >
   Ingredient information unavailable. Please check the package label.
 </div>
-                )}
+)}
+                <div style={{ marginTop: 20 }}>
+  <div style={{ fontWeight: 800 }}>Ingredients</div>
+                  <p style={{ whiteSpace: "pre-wrap", opacity: 0.9, marginTop: 4 }}>
+                    {product.ingredientsText
+  ? highlightText(product.ingredientsText, highlightTerms)
+  : "No ingredient text returned from sources."}
+                  </p>
+                </div>
               </div>
             </div>
           )}
