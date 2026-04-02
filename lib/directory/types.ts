@@ -22,6 +22,16 @@ export type AffiliateLink = {
   label: string;
 };
 
+export type ApiLookupProduct = {
+  barcode: string;
+  name?: string;
+  brand?: string;
+  imageUrl?: string;
+  ingredientsText?: string;
+  note?: string;
+  source: "go-upc" | "openpetfoodfacts" | "openfoodfacts" | "none";
+};
+
 export type Product = {
   barcode: string;
   barcodeType: BarcodeType;
