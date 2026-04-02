@@ -614,16 +614,16 @@ const localProduct = await getProductByBarcode(cleaned);
   onClick={() => {
     console.log("See safe alternatives clicked");
   }}
-  style={{
-    marginTop: 10,
-    width: "100%",
-    padding: "12px 14px",
-    borderRadius: 10,
-    border: "1px solid #ddd",
-    background: "#f8f8f8",
-    cursor: "pointer",
-    fontWeight: 600,
-  }}
+style={{
+  marginTop: 10,
+  padding: "8px 12px",
+  borderRadius: 8,
+  border: "1px solid #ddd",
+  background: "#f8f8f8",
+  cursor: "pointer",
+  fontWeight: 600,
+  fontSize: 13,
+}}
 >
   See allergy-safe alternatives for your pet
 </button>
@@ -633,8 +633,20 @@ const localProduct = await getProductByBarcode(cleaned);
                     <div style={{ marginBottom: 6 }}>
   This product contains ingredients that match your pet’s allergy list.
 </div>
-                    <div style={{ fontWeight: 800 }}>Matched allergens for your pet ({profile.dogName}):</div>
-                    <ul style={{ marginTop: 8 }}>
+<div
+  style={{
+    fontWeight: 800,
+    color:
+      verdict === "safe"
+        ? "#16a34a"
+        : verdict === "avoid"
+        ? "#dc2626"
+        : "#d97706",
+  }}
+>
+  Matched allergens for your pet ({profile.dogName}):
+</div>
+                    <ul style={{ marginTop: 8, marginBottom: 16 }}>
                       {hits.map((h) => (
   <li key={h.allergen}>
     {h.allergen} ({h.matched})
@@ -653,7 +665,7 @@ const localProduct = await getProductByBarcode(cleaned);
 
                 <div style={{ marginTop: 10 }}>
                   <div style={{ fontWeight: 800 }}>Ingredients</div>
-                  <p style={{ whiteSpace: "pre-wrap", opacity: 0.9 }}>
+                  <p style={{ whiteSpace: "pre-wrap", opacity: 0.9, marginTop: 4 }}>
                     {product.ingredientsText
   ? highlightText(product.ingredientsText, highlightTerms)
   : "No ingredient text returned from sources."}
