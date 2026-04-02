@@ -203,9 +203,28 @@ setTimeout(() => {
       }
       return res.json();
     })
-    .then(async (j: import("@/lib/directory/types").Product) => {
-  setProduct(j);
-  await saveProduct(j);
+    .then(async (j: import("@/lib/directory/types").ApiLookupProduct) => {
+  const enrichedProduct: import("@/lib/directory/types").Product = {
+  barcode: j.barcode,
+  barcodeType: "UNKNOWN",
+  brand: j.brand || "",
+  name: j.name || "",
+  speciesTargets: ["dog"],
+  productCategory: "treats", // temporary default
+  productSubcategory: null,
+  sizeValue: null,
+  sizeUnit: null,
+  imageUrl: j.imageUrl || "",
+  ingredientsText: j.ingredientsText || "",
+  source: "api",
+  verified: false,
+  notes: j.note || "",
+  lastUpdated: new Date().toISOString(),
+  affiliateLinks: [],
+};
+
+setProduct(enrichedProduct);
+await saveProduct(enrichedProduct);
   setStatus("idle");
 })
     .catch(() => {
