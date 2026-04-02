@@ -316,13 +316,6 @@ const localProduct = await getProductByBarcode(cleaned);
 
   return (
     <main style={{ maxWidth: 900, margin: "28px auto", padding: 16, fontFamily: "system-ui" }}>
-      <style>{`
-@keyframes scanline {
-  0% { top: 0%; }
-  50% { top: 100%; }
-  100% { top: 0%; }
-}
-`}</style>
       
       <header style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
         <div>
