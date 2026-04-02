@@ -5,18 +5,8 @@ import { BrowserMultiFormatReader } from "@zxing/browser";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
 import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
+import type { Product } from "@/lib/directory/types";
 import { clsx } from "@/lib/ui";
-
-type Product = {
-  barcode: string;
-  name?: string;
-  brand?: string;
-  imageUrl?: string;
-  ingredientsText?: string;
-  note?: string;
-  source: string;
-};
-
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
