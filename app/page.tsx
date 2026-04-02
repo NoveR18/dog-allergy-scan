@@ -608,7 +608,7 @@ style={{
   fontSize: 13,
 }}
 >
-  See allergy-safe {product.productCategory.replaceAll("_", " ")} for your pet
+  See allergy-safe {(product.productCategory ?? "products").replaceAll("_", " ")} for your pet
 </button>
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
