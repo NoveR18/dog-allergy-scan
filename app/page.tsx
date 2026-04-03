@@ -344,6 +344,42 @@ const verdict =
   setStatus("idle");
   return;
 }
+    if (cleaned === "333333333333") {
+  const testApiProduct: import("@/lib/directory/types").ApiLookupProduct = {
+    barcode: cleaned,
+    name: "Chicken Recipe Kibble Dog Food",
+    brand: "DFAS Test",
+    imageUrl: "",
+    ingredientsText: "Chicken meal, brown rice, vitamins",
+    source: "none",
+  };
+
+  const classification = classifyApiLookupProduct(testApiProduct);
+
+  const enrichedProduct: import("@/lib/directory/types").Product = {
+    barcode: testApiProduct.barcode,
+    barcodeType: "UNKNOWN",
+    brand: testApiProduct.brand || "",
+    name: testApiProduct.name || "",
+    speciesTargets: ["dog"],
+    productCategory: classification.productCategory,
+    productSubcategory: classification.productSubcategory,
+    sizeValue: null,
+    sizeUnit: null,
+    imageUrl: testApiProduct.imageUrl || "",
+    ingredientsText: testApiProduct.ingredientsText || "",
+    source: "api",
+    verified: false,
+    notes: "",
+    lastUpdated: new Date().toISOString(),
+    affiliateLinks: [],
+  };
+
+  setProduct(enrichedProduct);
+  await saveProduct(enrichedProduct);
+  setStatus("idle");
+  return;
+}
     if (!cleaned) {
       setError("Enter a barcode or EAN (numbers only).");
       setStatus("error");
