@@ -25,14 +25,16 @@ export function classifyApiLookupProduct(
   .filter(Boolean);
 
 if (
-  combinedWords.includes("treat") ||
-  combinedWords.includes("treats") ||
-  combinedWords.includes("biscuit") ||
-  combinedWords.includes("biscuits") ||
-  combinedWords.includes("chew") ||
-  combinedWords.includes("chews") ||
-  combinedWords.includes("snack") ||
-  combinedWords.includes("snacks")
+[
+  "treat",
+  "treats",
+  "biscuit",
+  "biscuits",
+  "chew",
+  "chews",
+  "snack",
+  "snacks",
+].some((word) => combinedWords.includes(word))
 ) {
     return {
       productCategory: "treats",
