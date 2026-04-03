@@ -297,7 +297,7 @@ const localProduct = await getProductByBarcode(cleaned);
         const j = await res.json().catch(() => ({}));
         throw new Error(j?.error || `Lookup failed (${res.status})`);
       }
-      const j = (await res.json()) as import("@/lib/directory/types").Product;
+      const j = (await res.json()) as import("@/lib/directory/types").ApiLookupProduct;
       setProduct(j);
       console.log("Saving API product to DB:", j);
    await saveProduct(j);
