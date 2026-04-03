@@ -52,7 +52,6 @@ if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
     };
   }
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
-) {
   return {
     productCategory: "dry_food",
     productSubcategory: null,
