@@ -69,7 +69,13 @@ return {
   }
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
 
-  const isDryFood = ["kibble"].some((word) => combinedWords.includes(word));
+  const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
+  "kibble",
+];
+
+const isDryFood = DRY_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
+  combinedWords.includes(word)
+);
 
 return {
   productCategory: "dry_food",
