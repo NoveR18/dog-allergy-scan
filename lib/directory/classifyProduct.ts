@@ -44,12 +44,16 @@ const FOOD_KEYWORDS = [
 ];
   
 if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
-    return {
-      productCategory: "treats",
-      productSubcategory: null,
-      confidence: 0.8,
-      source: "rule",
-    };
+const isDental = ["dental", "dentastix", "greenies"].some((word) =>
+  combinedWords.includes(word)
+);
+
+return {
+  productCategory: "treats",
+  productSubcategory: isDental ? "dental" : null,
+  confidence: 0.8,
+  source: "rule",
+};
   }
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
   return {
