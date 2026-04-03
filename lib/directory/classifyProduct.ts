@@ -79,41 +79,49 @@ const WET_FOOD_SUBCATEGORY_KEYWORDS = [
   
 if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
 
-const isDental = combinedWords.some((word) =>
-  DENTAL_KEYWORDS.some((keyword) => word.startsWith(keyword))
+const TREAT_SUBCATEGORY_KEYWORDS = {
+  dental: DENTAL_KEYWORDS,
+};
+
+const treatSubcategory = Object.entries(TREAT_SUBCATEGORY_KEYWORDS).find(
+  ([, keywords]) =>
+    combinedWords.some((word) =>
+      keywords.some((keyword) => word.startsWith(keyword))
+    )
 );
 
 return {
   productCategory: "treats",
-  productSubcategory: isDental ? "dental" : null,
+  productSubcategory: treatSubcategory ? treatSubcategory[0] : null,
   confidence: 0.8,
   source: "rule",
 };
   }
 
-const isPate = WET_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
-  combinedWords.includes(word)
-);
+if (WET_FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
+  const isPate = WET_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
+    combinedWords.includes(word)
+  );
 
-return {
-  productCategory: "wet_food",
-  productSubcategory: isPate ? "pate" : null,
-  confidence: 0.7,
-  source: "rule",
-};
-  
+  return {
+    productCategory: "wet_food",
+    productSubcategory: isPate ? "pate" : null,
+    confidence: 0.7,
+    source: "rule",
+  };
+}
+
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
+  const isDryFood = DRY_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
+    combinedWords.includes(word)
+  );
 
-const isDryFood = DRY_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
-  combinedWords.includes(word)
-);
-
-return {
-  productCategory: "dry_food",
-  productSubcategory: isDryFood ? "kibble" : null,
-  confidence: 0.55,
-  source: "rule",
-};
+  return {
+    productCategory: "dry_food",
+    productSubcategory: isDryFood ? "kibble" : null,
+    confidence: 0.55,
+    source: "rule",
+  };
 }
   
   return {
