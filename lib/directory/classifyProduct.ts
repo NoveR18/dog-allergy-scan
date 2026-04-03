@@ -52,8 +52,8 @@ const DENTAL_KEYWORDS = [
   
 if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
 
-const isDental = DENTAL_KEYWORDS.some((word) =>
-  combinedWords.includes(word)
+const isDental = combinedWords.some((word) =>
+  DENTAL_KEYWORDS.some((keyword) => word.startsWith(keyword))
 );
 
 return {
