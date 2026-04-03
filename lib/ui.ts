@@ -1,3 +1,7 @@
-﻿export function clsx(...parts: Array<string | false | null | undefined>) {
-  return parts.filter(Boolean).join(" ");
+export function clsx(
+  ...parts: Array<string | number | false | null | undefined>
+): string {
+  return parts
+    .filter((p) => typeof p === "string" || typeof p === "number")
+    .join(" ");
 }
