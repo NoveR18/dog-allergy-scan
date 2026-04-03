@@ -24,8 +24,7 @@ export function classifyApiLookupProduct(
   .map((w) => w.replace(/[^a-z]/g, ""))
   .filter(Boolean);
 
-if (
-[
+const TREAT_KEYWORDS = [
   "treat",
   "treats",
   "biscuit",
@@ -34,8 +33,17 @@ if (
   "chews",
   "snack",
   "snacks",
-].some((word) => combinedWords.includes(word))
-) {
+];
+
+const FOOD_KEYWORDS = [
+  "recipe",
+  "formula",
+  "dinner",
+  "food",
+  "kibble",
+];
+  
+if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
     return {
       productCategory: "treats",
       productSubcategory: null,
@@ -43,14 +51,7 @@ if (
       source: "rule",
     };
   }
-if (
-  [
-    "recipe",
-    "formula",
-    "dinner",
-    "food",
-    "kibble",
-  ].some((word) => combinedWords.includes(word))
+if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
 ) {
   return {
     productCategory: "dry_food",
