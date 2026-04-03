@@ -1,13 +1,21 @@
-﻿"use client";
+"use client";
 
 import { classifyApiLookupProduct } from "@/lib/directory/classifyProduct";
-import { getProductByBarcode, saveProduct, getAllProducts } from "@/lib/directory/directoryService";
+import {
+  getAllProducts,
+  getProductByBarcode,
+  saveProduct,
+} from "@/lib/directory/directoryService";
+import type { ApiLookupProduct, Product } from "@/lib/directory/types";
+import {
+  dedupeAllergens,
+  findAllergenHits,
+  getHighlightTerms,
+} from "@/lib/allergy";
+import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
+import { clsx } from "@/lib/ui";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { dedupeAllergens, findAllergenHits, getHighlightTerms } from "@/lib/allergy";
-import { loadProfile, saveProfile, type StoredProfile } from "@/lib/storage";
-import type { Product } from "@/lib/directory/types";
-import { clsx } from "@/lib/ui";
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -57,6 +65,7 @@ function Pill({ text, onRemove }: { text: string; onRemove: () => void }) {
     </span>
   );
 }
+
 function highlightText(original: string, highlightTerms: string[]) {
   if (!original || !highlightTerms.length) return original;
 
@@ -69,6 +78,7 @@ function highlightText(original: string, highlightTerms: string[]) {
     parts = parts.flatMap((p, idx) => {
       if (typeof p !== "string") return [p];
       const split = p.split(re);
+
       return split.map((chunk, i) => {
         if (i % 2 === 1) {
           return (
@@ -84,6 +94,7 @@ function highlightText(original: string, highlightTerms: string[]) {
             </mark>
           );
         }
+
         return chunk;
       });
     });
@@ -92,16 +103,80 @@ function highlightText(original: string, highlightTerms: string[]) {
   return parts;
 }
 
+function buildEnrichedProduct(apiProduct: ApiLookupProduct): Product {
+  const classification = classifyApiLookupProduct(apiProduct);
+
+  return {
+    barcode: apiProduct.barcode,
+    barcodeType: "UNKNOWN",
+    brand: apiProduct.brand || "",
+    name: apiProduct.name || "",
+    speciesTargets: ["dog"],
+    productCategory: classification.productCategory,
+    productSubcategory: classification.productSubcategory,
+    sizeValue: null,
+    sizeUnit: null,
+    imageUrl: apiProduct.imageUrl || "",
+    ingredientsText: apiProduct.ingredientsText || "",
+    source: "api",
+    verified: false,
+    notes: apiProduct.note || "",
+    lastUpdated: new Date().toISOString(),
+    affiliateLinks: [],
+  };
+}
+
+function getTestApiProduct(barcode: string): ApiLookupProduct | null {
+  if (barcode === "111111111111") {
+    return {
+      barcode,
+      name: "Test Dog Biscuits",
+      brand: "DFAS Test",
+      imageUrl: "",
+      ingredientsText: "Wheat flour, chicken fat, natural flavors",
+      note: "Temporary classifier test product.",
+      source: "none",
+    };
+  }
+
+  if (barcode === "222222222222") {
+    return {
+      barcode,
+      name: "Wet Beef Stew Dog Food",
+      brand: "DFAS Test",
+      imageUrl: "",
+      ingredientsText: "Beef, broth, vitamins",
+      source: "none",
+    };
+  }
+
+  if (barcode === "333333333333") {
+    return {
+      barcode,
+      name: "Chicken Recipe Kibble Dog Food",
+      brand: "DFAS Test",
+      imageUrl: "",
+      ingredientsText: "Chicken meal, brown rice, vitamins",
+      source: "none",
+    };
+  }
+
+  return null;
+}
+
 export default function Home() {
-  const [profile, setProfile] = useState<StoredProfile>({ dogName: "My Dog", allergens: [] });
+  const [profile, setProfile] = useState<StoredProfile>({
+    dogName: "My Dog",
+    allergens: [],
+  });
   const [draftAllergen, setDraftAllergen] = useState("");
   const [barcode, setBarcode] = useState("");
   const [product, setProduct] = useState<Product | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
   const [isScanning, setIsScanning] = useState(false);
-const [scanError, setScanError] = useState("");
-const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [scanError, setScanError] = useState("");
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const p = loadProfile();
@@ -114,287 +189,181 @@ const videoRef = useRef<HTMLVideoElement | null>(null);
   }, [profile]);
 
   useEffect(() => {
-  const loadLastProduct = async () => {
-    const products = await getAllProducts();
-    console.log("Loaded products from IndexedDB:", products);
+    const loadLastProduct = async () => {
+      const products = await getAllProducts();
+      console.log("Loaded products from IndexedDB:", products);
 
-    if (products.length > 0) {
-      setProduct(products[products.length - 1]);
-    }
-  };
-
-  loadLastProduct();
-}, []);
-  
-useEffect(() => {
-  if (!isScanning || !videoRef.current) return;
-
-  let stream: MediaStream | null = null;
-
-  async function startCamera() {
-    try {
-      setScanError("");
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
-        audio: false,
-      });
-
-      if (videoRef.current) {
-  videoRef.current.srcObject = stream;
-  await videoRef.current.play();
-
-  const reader = new BrowserMultiFormatReader();
-  reader.decodeFromVideoElement(videoRef.current, async (result, error) => {
-    if (result) {
-  const text = result.getText().replace(/\D/g, "");
-
-  // 🔊 PLAY BEEP HERE
-  try {
-  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-  const oscillator = audioContext.createOscillator();
-  const gainNode = audioContext.createGain();
-
-  oscillator.type = "sine";
-  oscillator.frequency.value = 880;
-  gainNode.gain.value = 0.08;
-
-  oscillator.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-
-  oscillator.start();
-  oscillator.stop(audioContext.currentTime + 0.08);
-} catch {}
-
-  const localProduct = await getProductByBarcode(text);
-  console.log("Local product lookup:", localProduct);
-  console.log("Scanned text:", text);
-
-  if (localProduct) {
-  setProduct(localProduct);
-  console.log("Saving product to DB:", localProduct);
-  await saveProduct(localProduct);
-  setStatus("idle");
-  setIsScanning(false); // ✅ ADD THIS LINE
-  return;
-}
-setStatus("loading");
-console.log("Reached API fallback with text:", text);
-      
-      if (text) {
-        setBarcode(text);
-setIsScanning(false);
-
-setTimeout(() => {
-  setBarcode(text);
-}, 0);
-
-setTimeout(() => {
-  const cleaned = text.replace(/\D/g, "");
-  if (!cleaned) return;
-
-  setStatus("loading");
-  setError("");
-  setProduct(null);
-
-  fetch(`/api/lookup?barcode=${encodeURIComponent(cleaned)}`)
-    .then(async (res) => {
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j?.error || `Lookup failed (${res.status})`);
+      if (products.length > 0) {
+        setProduct(products[products.length - 1]);
       }
-      return res.json();
-    })
-    .then(async (j: import("@/lib/directory/types").ApiLookupProduct) => {
-  const classification = classifyApiLookupProduct(j);
-  const enrichedProduct: import("@/lib/directory/types").Product = {
-  barcode: j.barcode,
-  barcodeType: "UNKNOWN",
-  brand: j.brand || "",
-  name: j.name || "",
-  speciesTargets: ["dog"],
-  productCategory: classification.productCategory,
-  productSubcategory: classification.productSubcategory,
-  sizeValue: null,
-  sizeUnit: null,
-  imageUrl: j.imageUrl || "",
-  ingredientsText: j.ingredientsText || "",
-  source: "api",
-  verified: false,
-  notes: j.note || "",
-  lastUpdated: new Date().toISOString(),
-  affiliateLinks: [],
-};
+    };
 
-setProduct(enrichedProduct);
-await saveProduct(enrichedProduct);
-  setStatus("idle");
-})
-    .catch(() => {
-      setStatus("error");
-      setError("Scan lookup failed.");
-    });
-}, 0);
+    loadLastProduct();
+  }, []);
+
+  useEffect(() => {
+    if (!isScanning || !videoRef.current) return;
+
+    let stream: MediaStream | null = null;
+
+    async function startCamera() {
+      try {
+        setScanError("");
+
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false,
+        });
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play();
+
+          const reader = new BrowserMultiFormatReader();
+
+          reader.decodeFromVideoElement(videoRef.current, async (result) => {
+            if (!result) return;
+
+            const text = result.getText().replace(/\D/g, "");
+
+            try {
+              const audioContext = new (
+                window.AudioContext || (window as any).webkitAudioContext
+              )();
+              const oscillator = audioContext.createOscillator();
+              const gainNode = audioContext.createGain();
+
+              oscillator.type = "sine";
+              oscillator.frequency.value = 880;
+              gainNode.gain.value = 0.08;
+
+              oscillator.connect(gainNode);
+              gainNode.connect(audioContext.destination);
+
+              oscillator.start();
+              oscillator.stop(audioContext.currentTime + 0.08);
+            } catch {}
+
+            const localProduct = await getProductByBarcode(text);
+            console.log("Local product lookup:", localProduct);
+            console.log("Scanned text:", text);
+
+            if (localProduct) {
+              setProduct(localProduct);
+              console.log("Saving product to DB:", localProduct);
+              await saveProduct(localProduct);
+              setStatus("idle");
+              setIsScanning(false);
+              return;
+            }
+
+            setStatus("loading");
+            console.log("Reached API fallback with text:", text);
+
+            if (text) {
+              setBarcode(text);
+              setIsScanning(false);
+
+              setTimeout(() => {
+                setBarcode(text);
+              }, 0);
+
+              setTimeout(() => {
+                const cleaned = text.replace(/\D/g, "");
+                if (!cleaned) return;
+
+                setStatus("loading");
+                setError("");
+                setProduct(null);
+
+                fetch(`/api/lookup?barcode=${encodeURIComponent(cleaned)}`)
+                  .then(async (res) => {
+                    if (!res.ok) {
+                      const j = await res.json().catch(() => ({}));
+                      throw new Error(j?.error || `Lookup failed (${res.status})`);
+                    }
+                    return res.json();
+                  })
+                  .then(async (j: ApiLookupProduct) => {
+                    const enrichedProduct = buildEnrichedProduct(j);
+                    setProduct(enrichedProduct);
+                    await saveProduct(enrichedProduct);
+                    setStatus("idle");
+                  })
+                  .catch(() => {
+                    setStatus("error");
+                    setError("Scan lookup failed.");
+                  });
+              }, 0);
+            }
+          });
+        }
+      } catch {
+        setScanError("Could not access camera.");
       }
     }
-  });
-}
-    } catch (err) {
-      setScanError("Could not access camera.");
-    }
-  }
 
-  startCamera();
+    startCamera();
 
-  return () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
-  };
-}, [isScanning]);
-  
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [isScanning]);
+
   const hits = useMemo(() => {
     if (!product?.ingredientsText) return [];
     return findAllergenHits(product.ingredientsText, profile.allergens);
   }, [product, profile.allergens]);
-const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
 
-const looksEnglish =
-  !!product?.ingredientsText &&
-  /^[\x00-\x7F\s.,()%\-:;'"\/]+$/.test(product.ingredientsText);
+  const highlightTerms = useMemo(() => getHighlightTerms(hits), [hits]);
 
-const verdict =
-  !product ? null :
-  !profile.allergens.length ? "unknown" :
-  !product.ingredientsText || !looksEnglish ? "unknown" :
-  hits.length ? "avoid" :
-  "safe";
+  const looksEnglish =
+    !!product?.ingredientsText &&
+    /^[\x00-\x7F\s.,()%\-:;'"\/]+$/.test(product.ingredientsText);
+
+  const verdict = !product
+    ? null
+    : !profile.allergens.length
+      ? "unknown"
+      : !product.ingredientsText || !looksEnglish
+        ? "unknown"
+        : hits.length
+          ? "avoid"
+          : "safe";
 
   async function lookup() {
     const cleaned = barcode.replace(/\D/g, "").trim();
-    if (cleaned === "111111111111") {
-  const testApiProduct: import("@/lib/directory/types").ApiLookupProduct = {
-    barcode: cleaned,
-    name: "Test Dog Biscuits",
-    brand: "DFAS Test",
-    imageUrl: "",
-    ingredientsText: "Wheat flour, chicken fat, natural flavors",
-    source: "none",
-  };
 
-  const classification = classifyApiLookupProduct(testApiProduct);
+    const testApiProduct = getTestApiProduct(cleaned);
+    if (testApiProduct) {
+      const enrichedProduct = buildEnrichedProduct(testApiProduct);
+      setProduct(enrichedProduct);
+      await saveProduct(enrichedProduct);
+      setStatus("idle");
+      setError("");
+      return;
+    }
 
-  const enrichedProduct: import("@/lib/directory/types").Product = {
-    barcode: testApiProduct.barcode,
-    barcodeType: "UNKNOWN",
-    brand: testApiProduct.brand || "",
-    name: testApiProduct.name || "",
-    speciesTargets: ["dog"],
-    productCategory: classification.productCategory,
-    productSubcategory: classification.productSubcategory,
-    sizeValue: null,
-    sizeUnit: null,
-    imageUrl: testApiProduct.imageUrl || "",
-    ingredientsText: testApiProduct.ingredientsText || "",
-    source: "api",
-    verified: false,
-    notes: "Temporary classifier test product.",
-    lastUpdated: new Date().toISOString(),
-    affiliateLinks: [],
-  };
-
-  setProduct(enrichedProduct);
-  await saveProduct(enrichedProduct);
-  setStatus("idle");
-  setError("");
-  return;
-}
-    if (cleaned === "222222222222") {
-  const testApiProduct: import("@/lib/directory/types").ApiLookupProduct = {
-    barcode: cleaned,
-    name: "Wet Beef Stew Dog Food",
-    brand: "DFAS Test",
-    imageUrl: "",
-    ingredientsText: "Beef, broth, vitamins",
-    source: "none",
-  };
-
-  const classification = classifyApiLookupProduct(testApiProduct);
-
-  const enrichedProduct: import("@/lib/directory/types").Product = {
-    barcode: testApiProduct.barcode,
-    barcodeType: "UNKNOWN",
-    brand: testApiProduct.brand || "",
-    name: testApiProduct.name || "",
-    speciesTargets: ["dog"],
-    productCategory: classification.productCategory,
-    productSubcategory: classification.productSubcategory,
-    sizeValue: null,
-    sizeUnit: null,
-    imageUrl: testApiProduct.imageUrl || "",
-    ingredientsText: testApiProduct.ingredientsText || "",
-    source: "api",
-    verified: false,
-    notes: "",
-    lastUpdated: new Date().toISOString(),
-    affiliateLinks: [],
-  };
-
-  setProduct(enrichedProduct);
-  await saveProduct(enrichedProduct);
-  setStatus("idle");
-  return;
-}
-    if (cleaned === "333333333333") {
-  const testApiProduct: import("@/lib/directory/types").ApiLookupProduct = {
-    barcode: cleaned,
-    name: "Chicken Recipe Kibble Dog Food",
-    brand: "DFAS Test",
-    imageUrl: "",
-    ingredientsText: "Chicken meal, brown rice, vitamins",
-    source: "none",
-  };
-
-  const classification = classifyApiLookupProduct(testApiProduct);
-
-  const enrichedProduct: import("@/lib/directory/types").Product = {
-    barcode: testApiProduct.barcode,
-    barcodeType: "UNKNOWN",
-    brand: testApiProduct.brand || "",
-    name: testApiProduct.name || "",
-    speciesTargets: ["dog"],
-    productCategory: classification.productCategory,
-    productSubcategory: classification.productSubcategory,
-    sizeValue: null,
-    sizeUnit: null,
-    imageUrl: testApiProduct.imageUrl || "",
-    ingredientsText: testApiProduct.ingredientsText || "",
-    source: "api",
-    verified: false,
-    notes: "",
-    lastUpdated: new Date().toISOString(),
-    affiliateLinks: [],
-  };
-
-  setProduct(enrichedProduct);
-  await saveProduct(enrichedProduct);
-  setStatus("idle");
-  return;
-}
     if (!cleaned) {
       setError("Enter a barcode or EAN (numbers only).");
       setStatus("error");
       return;
     }
-    
-const localProduct = await getProductByBarcode(cleaned);
+
+    const localProduct = await getProductByBarcode(cleaned);
     console.log("Manual local product lookup:", localProduct);
 
     if (localProduct) {
-  setProduct(localProduct);
-  console.log("Saving product to DB:", localProduct);
-  await saveProduct(localProduct);
-  setStatus("idle");
-}
+      setProduct(localProduct);
+      console.log("Saving product to DB:", localProduct);
+      await saveProduct(localProduct);
+      setStatus("idle");
+      setError("");
+      return;
+    }
+
     setStatus("loading");
     setError("");
     setProduct(null);
@@ -402,38 +371,22 @@ const localProduct = await getProductByBarcode(cleaned);
     try {
       console.log("About to fetch API for:", cleaned);
       const res = await fetch(`/api/lookup?barcode=${encodeURIComponent(cleaned)}`);
+
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         throw new Error(j?.error || `Lookup failed (${res.status})`);
       }
-      const j = (await res.json()) as import("@/lib/directory/types").ApiLookupProduct;
-const classification = classifyApiLookupProduct(j);
 
-const enrichedProduct: import("@/lib/directory/types").Product = {
-  barcode: j.barcode,
-  barcodeType: "UNKNOWN",
-  brand: j.brand || "",
-  name: j.name || "",
-  speciesTargets: ["dog"],
-  productCategory: classification.productCategory,
-  productSubcategory: classification.productSubcategory,
-  sizeValue: null,
-  sizeUnit: null,
-  imageUrl: j.imageUrl || "",
-  ingredientsText: j.ingredientsText || "",
-  source: "api",
-  verified: false,
-  notes: j.note || "",
-  lastUpdated: new Date().toISOString(),
-  affiliateLinks: [],
-};
+      const j = (await res.json()) as ApiLookupProduct;
+      const enrichedProduct = buildEnrichedProduct(j);
 
-setProduct(enrichedProduct);
-console.log("Saving API product to DB:", enrichedProduct);
-await saveProduct(enrichedProduct);
-setStatus("idle");
-    } catch (e: any) {
+      setProduct(enrichedProduct);
+      console.log("Saving API product to DB:", enrichedProduct);
+      await saveProduct(enrichedProduct);
+      setStatus("idle");
+    } catch {
       setStatus("error");
+      setError("Lookup failed.");
     }
   }
 
@@ -447,7 +400,10 @@ setStatus("idle");
   }
 
   function removeAllergen(a: string) {
-    setProfile({ ...profile, allergens: profile.allergens.filter((x) => x !== a) });
+    setProfile({
+      ...profile,
+      allergens: profile.allergens.filter((x) => x !== a),
+    });
   }
 
   function clearResults() {
@@ -457,13 +413,27 @@ setStatus("idle");
   }
 
   return (
-    <main style={{ maxWidth: 900, margin: "28px auto", padding: 16, fontFamily: "system-ui" }}>
-      
-      <header style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+    <main
+      style={{
+        maxWidth: 900,
+        margin: "28px auto",
+        padding: 16,
+        fontFamily: "system-ui",
+      }}
+    >
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 16,
+          flexWrap: "wrap",
+        }}
+      >
         <div>
           <h1 style={{ margin: 0, fontSize: 28 }}>Pet Food Allergy Scanner</h1>
           <p style={{ margin: "8px 0 0", opacity: 0.75 }}>
-            Add your pet’s allergens, then look up foods by barcode to see what’s safe.
+            Add your pet’s allergens, then look up foods by barcode to see what’s
+            safe.
           </p>
         </div>
 
@@ -483,7 +453,14 @@ setStatus("idle");
         </div>
       </header>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16, marginTop: 16 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: 16,
+          marginTop: 16,
+        }}
+      >
         <Card>
           <h2 style={{ marginTop: 0, marginBottom: 8 }}>Allergens to avoid</h2>
 
@@ -492,7 +469,13 @@ setStatus("idle");
               value={draftAllergen}
               onChange={(e) => setDraftAllergen(e.target.value)}
               placeholder="e.g., beef, pea protein, brewer’s yeast"
-              style={{ flex: 1, minWidth: 240, padding: 10, borderRadius: 12, border: "1px solid #ddd" }}
+              style={{
+                flex: 1,
+                minWidth: 240,
+                padding: 10,
+                borderRadius: 12,
+                border: "1px solid #ddd",
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") addAllergen();
               }}
@@ -514,7 +497,9 @@ setStatus("idle");
 
           <div style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
             {profile.allergens.length ? (
-              profile.allergens.map((a) => <Pill key={a} text={a} onRemove={() => removeAllergen(a)} />)
+              profile.allergens.map((a) => (
+                <Pill key={a} text={a} onRemove={() => removeAllergen(a)} />
+              ))
             ) : (
               <span style={{ opacity: 0.6 }}>No allergens added yet.</span>
             )}
@@ -529,7 +514,13 @@ setStatus("idle");
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
               placeholder="Numbers only (example: 012345678905)"
-              style={{ flex: 1, minWidth: 240, padding: 10, borderRadius: 12, border: "1px solid #ddd" }}
+              style={{
+                flex: 1,
+                minWidth: 240,
+                padding: 10,
+                borderRadius: 12,
+                border: "1px solid #ddd",
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") lookup();
               }}
@@ -549,23 +540,23 @@ setStatus("idle");
               {status === "loading" ? "Searching..." : "Search"}
             </button>
 
-<button
-  type="button"
-  onClick={() => {
-  setScanError("");
-  setIsScanning(true);
-}}
-  style={{
-    padding: "10px 14px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    background: "white",
-    cursor: "pointer",
-  }}
->
-  Scan
-</button>
-            
+            <button
+              type="button"
+              onClick={() => {
+                setScanError("");
+                setIsScanning(true);
+              }}
+              style={{
+                padding: "10px 14px",
+                borderRadius: 12,
+                border: "1px solid #ddd",
+                background: "white",
+                cursor: "pointer",
+              }}
+            >
+              Scan
+            </button>
+
             <button
               onClick={clearResults}
               style={{
@@ -581,95 +572,97 @@ setStatus("idle");
           </div>
 
           {isScanning && (
-  <div
-    style={{
-      marginTop: 12,
-      border: "1px solid #ddd",
-      borderRadius: 12,
-      padding: 12,
-      background: "#fafafa",
-    }}
-  >
-    <div style={{ fontWeight: 800, marginBottom: 8 }}>Scanning… point your camera at a barcode</div>
+            <div
+              style={{
+                marginTop: 12,
+                border: "1px solid #ddd",
+                borderRadius: 12,
+                padding: 12,
+                background: "#fafafa",
+              }}
+            >
+              <div style={{ fontWeight: 800, marginBottom: 8 }}>
+                Scanning… point your camera at a barcode
+              </div>
 
-    <div
-  style={{
-    position: "relative",
-    width: "100%",
-    maxWidth: 420,
-  }}
->
-  <video
-    ref={videoRef}
-    style={{
-      width: "100%",
-      borderRadius: 12,
-      background: "black",
-      display: "block",
-    }}
-    muted
-    playsInline
-  />
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  maxWidth: 420,
+                }}
+              >
+                <video
+                  ref={videoRef}
+                  style={{
+                    width: "100%",
+                    borderRadius: 12,
+                    background: "black",
+                    display: "block",
+                  }}
+                  muted
+                  playsInline
+                />
 
- <div
-  style={{
-    position: "absolute",
-    inset: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    pointerEvents: "none",
-  }}
->
-  <div
-    style={{
-      width: "90%",
-      height: "45%",
-      border: "2px solid rgba(255,255,255,0.9)",
-      borderRadius: 12,
-      boxShadow: "0 0 0 9999px rgba(0,0,0,0.25)",
-      position: "relative",
-      overflow: "hidden",
-    }}
-  >
-    <div
-  style={{
-    position: "absolute",
-    left: 0,
-    right: 0,
-    height: 2,
-    background: "rgba(255,0,0,0.9)",
-    boxShadow: "0 0 8px rgba(255,0,0,0.8)",
-    top: "50%",
-    transform: "translateY(-50%)",
-  }}
-/>
-  </div>
-</div>
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "90%",
+                      height: "45%",
+                      border: "2px solid rgba(255,255,255,0.9)",
+                      borderRadius: 12,
+                      boxShadow: "0 0 0 9999px rgba(0,0,0,0.25)",
+                      position: "relative",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        height: 2,
+                        background: "rgba(255,0,0,0.9)",
+                        boxShadow: "0 0 8px rgba(255,0,0,0.8)",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
 
-</div>
-      
-    <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <button
-        type="button"
-        onClick={() => setIsScanning(false)}
-        style={{
-          padding: "10px 14px",
-          borderRadius: 12,
-          border: "1px solid #ddd",
-          background: "white",
-          cursor: "pointer",
-        }}
-      >
-        Close Scanner
-      </button>
-    </div>
+              <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  onClick={() => setIsScanning(false)}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: 12,
+                    border: "1px solid #ddd",
+                    background: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  Close Scanner
+                </button>
+              </div>
 
-    {scanError && (
-      <p style={{ marginTop: 10, color: "crimson" }}>{scanError}</p>
-    )}
-  </div>
-)}
+              {scanError && (
+                <p style={{ marginTop: 10, color: "crimson" }}>{scanError}</p>
+              )}
+            </div>
+          )}
+
           {status === "error" && (
             <p style={{ marginTop: 12, color: "crimson" }}>{error}</p>
           )}
@@ -682,134 +675,173 @@ setStatus("idle");
                   <img
                     src={product.imageUrl}
                     alt=""
-                    style={{ width: 84, height: 84, objectFit: "cover", borderRadius: 14, border: "1px solid #eee" }}
+                    style={{
+                      width: 84,
+                      height: 84,
+                      objectFit: "cover",
+                      borderRadius: 14,
+                      border: "1px solid #eee",
+                    }}
                   />
                 ) : (
-                  <div style={{ width: 84, height: 84, borderRadius: 14, border: "1px solid #eee", background: "#f3f3f3" }} />
+                  <div
+                    style={{
+                      width: 84,
+                      height: 84,
+                      borderRadius: 14,
+                      border: "1px solid #eee",
+                      background: "#f3f3f3",
+                    }}
+                  />
                 )}
 
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 800, fontSize: 18 }}>{product.name || "Unknown product name"}</div>
+                  <div style={{ fontWeight: 800, fontSize: 18 }}>
+                    {product.name || "Unknown product name"}
+                  </div>
                   <div style={{ opacity: 0.7 }}>{product.brand || "Unknown brand"}</div>
                   <div style={{ fontSize: 12, opacity: 0.6 }}>
                     Barcode: {product.barcode} • Source: {product.source}
                   </div>
                 </div>
 
-               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-  <div
-    className={clsx()}
-    style={{
-      padding: "8px 12px",
-      borderRadius: 999,
-      border: "1px solid #ddd",
-      background:
-        verdict === "safe" ? "#eafff3" :
-        verdict === "avoid" ? "#ffecec" :
-        "#fff7e6",
-      fontWeight: 800,
-    }}
-  >
-    {verdict === "safe" && "✅ SAFE"}
-    {verdict === "avoid" && "❌ AVOID"}
-    {verdict === "unknown" && "⚠️ UNKNOWN"}
-  </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <div
+                    className={clsx()}
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: 999,
+                      border: "1px solid #ddd",
+                      background:
+                        verdict === "safe"
+                          ? "#eafff3"
+                          : verdict === "avoid"
+                            ? "#ffecec"
+                            : "#fff7e6",
+                      fontWeight: 800,
+                    }}
+                  >
+                    {verdict === "safe" && "✅ SAFE"}
+                    {verdict === "avoid" && "❌ AVOID"}
+                    {verdict === "unknown" && "⚠️ UNKNOWN"}
+                  </div>
 
-  {verdict === "unknown" && (
-    <div style={{ marginTop: 6, fontSize: 13, opacity: 0.8, textAlign: "right", maxWidth: 260 }}>
-      We couldn’t complete a reliable check. Add allergens for your pet or ensure the ingredient list is readable in English.
-    </div>
-  )}
-</div>
-                
+                  {verdict === "unknown" && (
+                    <div
+                      style={{
+                        marginTop: 6,
+                        fontSize: 13,
+                        opacity: 0.8,
+                        textAlign: "right",
+                        maxWidth: 260,
+                      }}
+                    >
+                      We couldn’t complete a reliable check. Add allergens for your pet
+                      or ensure the ingredient list is readable in English.
+                    </div>
+                  )}
+                </div>
               </div>
+
               <button
-  type="button"
-  onClick={() => {
-  setScanError("");
-  setError("");
-  setProduct(null);
-  setBarcode("");
-  setIsScanning(true);
-}}
-  style={{
-    marginTop: 12,
-    padding: "10px 14px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    background: "white",
-    cursor: "pointer",
-  }}
->
-  Scan another
-</button>
+                type="button"
+                onClick={() => {
+                  setScanError("");
+                  setError("");
+                  setProduct(null);
+                  setBarcode("");
+                  setIsScanning(true);
+                }}
+                style={{
+                  marginTop: 12,
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  border: "1px solid #ddd",
+                  background: "white",
+                  cursor: "pointer",
+                }}
+              >
+                Scan another
+              </button>
+
               <button
-  type="button"
-  onClick={() => {
-    console.log("See safe alternatives clicked");
-  }}
-style={{
-  marginTop: 10,
-  padding: "8px 12px",
-  borderRadius: 8,
-  border: "1px solid #ddd",
-  background: "#f8f8f8",
-  cursor: "pointer",
-  fontWeight: 600,
-  fontSize: 13,
-}}
->
-  See allergy-safe {((product.productCategory ?? "products") || "products").replaceAll("_", " ")} for your pet
-</button>
+                type="button"
+                onClick={() => {
+                  console.log("See safe alternatives clicked");
+                }}
+                style={{
+                  marginTop: 10,
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  border: "1px solid #ddd",
+                  background: "#f8f8f8",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  fontSize: 13,
+                }}
+              >
+                See allergy-safe {(product.productCategory ?? "products").replaceAll("_", " ")} for your pet
+              </button>
+
               <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
                 {verdict === "avoid" && (
                   <>
-<div
-  style={{
-    fontWeight: 600,
-    color: "#dc2626",
-  }}
->
-  This product contains ingredients that match your pet’s allergy list.
-</div>
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        color: "#dc2626",
+                      }}
+                    >
+                      This product contains ingredients that match your pet’s allergy
+                      list.
+                    </div>
                     <ul style={{ marginTop: 8, marginBottom: 16 }}>
                       {hits.map((h) => (
-  <li key={h.allergen}>
-    {h.allergen} ({h.matched})
-  </li>
-))}
+                        <li key={h.allergen}>
+                          {h.allergen} ({h.matched})
+                        </li>
+                      ))}
                     </ul>
                   </>
                 )}
-                {verdict === "safe" && (
-  <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
-    <div
-      style={{
-        fontWeight: 600,
-        color: "#16a34a",
-      }}
-    >
-      No allergens from your saved pet allergy list were detected for {profile.dogName}.
-    </div>
-  </div>
-)}
 
-{verdict === "unknown" && (
-<div
-  style={{
-    fontWeight: 600,
-    color: "#d97706",
-  }}
->
-  Ingredient information unavailable. Please check the package label.
-</div>
-)}
+                {verdict === "safe" && (
+                  <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        color: "#16a34a",
+                      }}
+                    >
+                      No allergens from your saved pet allergy list were detected for{" "}
+                      {profile.dogName}.
+                    </div>
+                  </div>
+                )}
+
+                {verdict === "unknown" && (
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      color: "#d97706",
+                    }}
+                  >
+                    Ingredient information unavailable. Please check the package label.
+                  </div>
+                )}
+
                 <div style={{ marginTop: 20 }}>
-  <div style={{ fontWeight: 800 }}>Ingredients</div>
+                  <div style={{ fontWeight: 800 }}>Ingredients</div>
                   <p style={{ whiteSpace: "pre-wrap", opacity: 0.9, marginTop: 4 }}>
                     {product.ingredientsText
-  ? highlightText(product.ingredientsText, highlightTerms)
-  : "No ingredient text returned from sources."}
+                      ? highlightText(product.ingredientsText, highlightTerms)
+                      : "No ingredient text returned from sources."}
                   </p>
                 </div>
               </div>
@@ -824,36 +856,3 @@ style={{
     </main>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
