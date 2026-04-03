@@ -165,10 +165,10 @@ function getTestApiProduct(barcode: string): ApiLookupProduct | null {
 }
 
 export default function Home() {
-const [profile, setProfile] = useState<StoredProfile>({
-  petName: "My Pet",
-  allergens: [],
-});
+  const [profile, setProfile] = useState<StoredProfile>({
+    petName: "My Pet",
+    allergens: [],
+  });
   const [draftAllergen, setDraftAllergen] = useState("");
   const [barcode, setBarcode] = useState("");
   const [product, setProduct] = useState<Product | null>(null);
@@ -731,21 +731,6 @@ const [profile, setProfile] = useState<StoredProfile>({
                     {verdict === "avoid" && "❌ AVOID"}
                     {verdict === "unknown" && "⚠️ UNKNOWN"}
                   </div>
-
-                  {verdict === "unknown" && (
-                    <div
-                      style={{
-                        marginTop: 6,
-                        fontSize: 13,
-                        opacity: 0.8,
-                        textAlign: "right",
-                        maxWidth: 260,
-                      }}
-                    >
-                      We couldn’t complete a reliable check. Add allergens for your pet
-                      or ensure the ingredient list is readable in English.
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -831,7 +816,7 @@ const [profile, setProfile] = useState<StoredProfile>({
                       color: "#d97706",
                     }}
                   >
-                    Ingredient information unavailable. Please check the package label.
+                    We couldn’t complete a reliable check for {profile.petName}. Please check the package label.
                   </div>
                 )}
 
