@@ -67,6 +67,10 @@ const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
   "kibble",
 ];
 
+const WET_FOOD_SUBCATEGORY_KEYWORDS = [
+  "pate",
+];
+  
 if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
 
 const isDental = combinedWords.some((word) =>
@@ -80,10 +84,6 @@ return {
   source: "rule",
 };
   }
-  
-const WET_FOOD_SUBCATEGORY_KEYWORDS = [
-  "pate",
-];
 
 const isPate = WET_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
   combinedWords.includes(word)
