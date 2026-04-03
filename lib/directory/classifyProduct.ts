@@ -21,10 +21,15 @@ export function classifyApiLookupProduct(
   const combinedText = [name, brand, ingredientsText].filter(Boolean).join(" ");
 
   if (
-    combinedText.includes("treat") ||
-    combinedText.includes("biscuits") ||
-    combinedText.includes("chews")
-  ) {
+  combinedText.includes("treat") ||
+  combinedText.includes("treats") ||
+  combinedText.includes("biscuit") ||
+  combinedText.includes("biscuits") ||
+  combinedText.includes("chew") ||
+  combinedText.includes("chews") ||
+  combinedText.includes("snack") ||
+  combinedText.includes("snacks")
+) {
     return {
       productCategory: "treats",
       productSubcategory: null,
