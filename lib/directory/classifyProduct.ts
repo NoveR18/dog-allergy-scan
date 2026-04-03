@@ -69,6 +69,12 @@ const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
 
 const WET_FOOD_SUBCATEGORY_KEYWORDS = [
   "pate",
+  "stew",
+  "gravy",
+  "morsels",
+  "shreds",
+  "bisque",
+  "mousse",
 ];
   
 if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
