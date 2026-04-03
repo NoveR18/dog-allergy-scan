@@ -41,7 +41,20 @@ if (
       source: "rule",
     };
   }
-
+if (
+  combinedWords.includes("recipe") ||
+  combinedWords.includes("formula") ||
+  combinedWords.includes("dinner") ||
+  combinedWords.includes("food")
+) {
+  return {
+    productCategory: "dry_food",
+    productSubcategory: null,
+    confidence: 0.55,
+    source: "rule",
+  };
+}
+  
   return {
     productCategory: null,
     productSubcategory: null,
