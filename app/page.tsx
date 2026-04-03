@@ -810,17 +810,18 @@ export default function Home() {
                 )}
 
                 {verdict === "unknown" && (
-  <div
-    style={{
-      fontWeight: 600,
-      color: "#d97706",
-    }}
-  >
-    {!profile.allergens.length
-      ? `We couldn’t complete a reliable check for ${profile.petName}. Please add allergens for ${profile.petName} first.`
-      : `We couldn’t complete a reliable check for ${profile.petName}. Please check the package label.`}
-  </div>
-)}
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      color: "#d97706",
+                    }}
+                  >
+                    {!profile.allergens.length
+                      ? `We couldn’t complete a reliable check for ${profile.petName}. Please add allergens for ${profile.petName} first.`
+                      : `We couldn’t complete a reliable check for ${profile.petName}. Please check the package label.`}
+                  </div>
+                )}
+
                 <div style={{ marginTop: 20 }}>
                   <div style={{ fontWeight: 800 }}>Ingredients</div>
                   <p style={{ whiteSpace: "pre-wrap", opacity: 0.9, marginTop: 4 }}>
