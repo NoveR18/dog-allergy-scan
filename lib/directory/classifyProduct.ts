@@ -54,6 +54,15 @@ const DENTAL_KEYWORDS = [
   "breath",
 ];
 
+  const WET_FOOD_KEYWORDS = [
+  "pate",
+  "stew",
+  "gravy",
+  "morsels",
+  "canned",
+  "shreds",
+];
+
 const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
   "kibble",
 ];
@@ -71,6 +80,16 @@ return {
   source: "rule",
 };
   }
+  
+if (WET_FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
+  return {
+    productCategory: "wet_food",
+    productSubcategory: null,
+    confidence: 0.7,
+    source: "rule",
+  };
+}
+  
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
 
 const isDryFood = DRY_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
