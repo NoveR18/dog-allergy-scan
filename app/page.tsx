@@ -212,7 +212,7 @@ setTimeout(() => {
   brand: j.brand || "",
   name: j.name || "",
   speciesTargets: ["dog"],
-  productCategory: classification.productCategory ?? "treats",
+  productCategory: classification.productCategory,
   productSubcategory: classification.productSubcategory,
   sizeValue: null,
   sizeUnit: null,
