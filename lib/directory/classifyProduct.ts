@@ -44,10 +44,13 @@ if (
     };
   }
 if (
-  combinedWords.includes("recipe") ||
-  combinedWords.includes("formula") ||
-  combinedWords.includes("dinner") ||
-  combinedWords.includes("food")
+  [
+    "recipe",
+    "formula",
+    "dinner",
+    "food",
+    "kibble",
+  ].some((word) => combinedWords.includes(word))
 ) {
   return {
     productCategory: "dry_food",
