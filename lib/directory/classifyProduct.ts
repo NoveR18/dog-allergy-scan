@@ -41,6 +41,7 @@ const FOOD_KEYWORDS = [
   "dinner",
   "food",
   "kibble",
+  "nutrition",
 ];
 
 const DENTAL_KEYWORDS = [
