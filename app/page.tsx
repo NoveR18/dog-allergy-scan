@@ -271,6 +271,43 @@ const verdict =
 
   async function lookup() {
     const cleaned = barcode.replace(/\D/g, "").trim();
+    if (cleaned === "111111111111") {
+  const testApiProduct: import("@/lib/directory/types").ApiLookupProduct = {
+    barcode: cleaned,
+    name: "Test Dog Biscuits",
+    brand: "DFAS Test",
+    imageUrl: "",
+    ingredientsText: "Wheat flour, chicken fat, natural flavors",
+    source: "none",
+  };
+
+  const classification = classifyApiLookupProduct(testApiProduct);
+
+  const enrichedProduct: import("@/lib/directory/types").Product = {
+    barcode: testApiProduct.barcode,
+    barcodeType: "UNKNOWN",
+    brand: testApiProduct.brand || "",
+    name: testApiProduct.name || "",
+    speciesTargets: ["dog"],
+    productCategory: classification.productCategory,
+    productSubcategory: classification.productSubcategory,
+    sizeValue: null,
+    sizeUnit: null,
+    imageUrl: testApiProduct.imageUrl || "",
+    ingredientsText: testApiProduct.ingredientsText || "",
+    source: "api",
+    verified: false,
+    notes: "Temporary classifier test product.",
+    lastUpdated: new Date().toISOString(),
+    affiliateLinks: [],
+  };
+
+  setProduct(enrichedProduct);
+  await saveProduct(enrichedProduct);
+  setStatus("idle");
+  setError("");
+  return;
+}
     if (!cleaned) {
       setError("Enter a barcode or EAN (numbers only).");
       setStatus("error");
