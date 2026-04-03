@@ -81,14 +81,20 @@ return {
 };
   }
   
-if (WET_FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
-  return {
-    productCategory: "wet_food",
-    productSubcategory: null,
-    confidence: 0.7,
-    source: "rule",
-  };
-}
+const WET_FOOD_SUBCATEGORY_KEYWORDS = [
+  "pate",
+];
+
+const isPate = WET_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
+  combinedWords.includes(word)
+);
+
+return {
+  productCategory: "wet_food",
+  productSubcategory: isPate ? "pate" : null,
+  confidence: 0.7,
+  source: "rule",
+};
   
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
 
