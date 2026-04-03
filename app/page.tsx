@@ -165,10 +165,10 @@ function getTestApiProduct(barcode: string): ApiLookupProduct | null {
 }
 
 export default function Home() {
-  const [profile, setProfile] = useState<StoredProfile>({
-    : "My Pet",
-    allergens: [],
-  });
+const [profile, setProfile] = useState<StoredProfile>({
+  petName: "My Pet",
+  allergens: [],
+});
   const [draftAllergen, setDraftAllergen] = useState("");
   const [barcode, setBarcode] = useState("");
   const [product, setProduct] = useState<Product | null>(null);
