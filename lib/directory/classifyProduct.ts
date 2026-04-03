@@ -68,12 +68,15 @@ return {
 };
   }
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
-  return {
-    productCategory: "dry_food",
-    productSubcategory: null,
-    confidence: 0.55,
-    source: "rule",
-  };
+
+  const isDryFood = ["kibble"].some((word) => combinedWords.includes(word));
+
+return {
+  productCategory: "dry_food",
+  productSubcategory: isDryFood ? "kibble" : null,
+  confidence: 0.55,
+  source: "rule",
+};
 }
   
   return {
