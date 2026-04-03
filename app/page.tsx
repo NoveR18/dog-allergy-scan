@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { classifyApiLookupProduct } from "@/lib/directory/classifyProduct";
 import { getProductByBarcode, saveProduct, getAllProducts } from "@/lib/directory/directoryService";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -204,14 +205,15 @@ setTimeout(() => {
       return res.json();
     })
     .then(async (j: import("@/lib/directory/types").ApiLookupProduct) => {
+  const classification = classifyApiLookupProduct(j);
   const enrichedProduct: import("@/lib/directory/types").Product = {
   barcode: j.barcode,
   barcodeType: "UNKNOWN",
   brand: j.brand || "",
   name: j.name || "",
   speciesTargets: ["dog"],
-  productCategory: "treats", // temporary default
-  productSubcategory: null,
+  productCategory: classification.productCategory ?? "treats",
+  productSubcategory: classification.productSubcategory,
   sizeValue: null,
   sizeUnit: null,
   imageUrl: j.imageUrl || "",
