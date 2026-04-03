@@ -38,7 +38,7 @@ export type Product = {
   brand: string;
   name: string;
   speciesTargets: Species[];
-  productCategory: ProductCategory;
+  productCategory: ProductCategory | null;
   productSubcategory: string | null;
   sizeValue: number | null;
   sizeUnit:
