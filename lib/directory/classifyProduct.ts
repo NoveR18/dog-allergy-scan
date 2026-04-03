@@ -42,13 +42,16 @@ const FOOD_KEYWORDS = [
   "food",
   "kibble",
   "nutrition",
+  "meal",
+  "entree",
 ];
 
 const DENTAL_KEYWORDS = [
   "dental",
   "oral",
   "teeth",
-  "gums"
+  "gums",
+  "breath",
 ];
   
 if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
