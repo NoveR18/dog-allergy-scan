@@ -53,7 +53,11 @@ const DENTAL_KEYWORDS = [
   "gums",
   "breath",
 ];
-  
+
+const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
+  "kibble",
+];
+
 if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
 
 const isDental = combinedWords.some((word) =>
@@ -68,10 +72,6 @@ return {
 };
   }
 if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
-
-  const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
-  "kibble",
-];
 
 const isDryFood = DRY_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
   combinedWords.includes(word)
