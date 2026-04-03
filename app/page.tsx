@@ -298,10 +298,31 @@ const localProduct = await getProductByBarcode(cleaned);
         throw new Error(j?.error || `Lookup failed (${res.status})`);
       }
       const j = (await res.json()) as import("@/lib/directory/types").ApiLookupProduct;
-      setProduct(j);
-      console.log("Saving API product to DB:", j);
-   await saveProduct(j);
-      setStatus("idle");
+const classification = classifyApiLookupProduct(j);
+
+const enrichedProduct: import("@/lib/directory/types").Product = {
+  barcode: j.barcode,
+  barcodeType: "UNKNOWN",
+  brand: j.brand || "",
+  name: j.name || "",
+  speciesTargets: ["dog"],
+  productCategory: classification.productCategory,
+  productSubcategory: classification.productSubcategory,
+  sizeValue: null,
+  sizeUnit: null,
+  imageUrl: j.imageUrl || "",
+  ingredientsText: j.ingredientsText || "",
+  source: "api",
+  verified: false,
+  notes: j.note || "",
+  lastUpdated: new Date().toISOString(),
+  affiliateLinks: [],
+};
+
+setProduct(enrichedProduct);
+console.log("Saving API product to DB:", enrichedProduct);
+await saveProduct(enrichedProduct);
+setStatus("idle");
     } catch (e: any) {
       setStatus("error");
     }
