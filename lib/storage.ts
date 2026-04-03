@@ -1,28 +1,37 @@
-﻿export type StoredProfile = {
-  dogName: string;
+export type StoredProfile = {
+  petName: string;
   allergens: string[];
 };
 
-const KEY = "dog_allergy_profile_v1";
+const KEY = "pet_allergy_profile_v1";
+
+const DEFAULT_PROFILE: StoredProfile = {
+  petName: "My Pet",
+  allergens: [],
+};
 
 export function loadProfile(): StoredProfile {
-  if (typeof window === "undefined") return { dogName: "My Dog", allergens: [] };
+  if (typeof window === "undefined") return DEFAULT_PROFILE;
 
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return { dogName: "My Dog", allergens: [] };
+    if (!raw) return DEFAULT_PROFILE;
+
     const parsed = JSON.parse(raw) as StoredProfile;
 
     return {
-      dogName: typeof parsed.dogName === "string" ? parsed.dogName : "My Dog",
-      allergens: Array.isArray(parsed.allergens) ? parsed.allergens.filter(Boolean) : [],
+      petName:
+        typeof parsed.petName === "string" ? parsed.petName : DEFAULT_PROFILE.petName,
+      allergens: Array.isArray(parsed.allergens)
+        ? parsed.allergens.filter(Boolean)
+        : [],
     };
   } catch {
-    return { dogName: "My Dog", allergens: [] };
+    return DEFAULT_PROFILE;
   }
 }
 
-export function saveProfile(profile: StoredProfile) {
+export function saveProfile(profile: StoredProfile): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(KEY, JSON.stringify(profile));
 }
