@@ -798,8 +798,7 @@ const [profile, setProfile] = useState<StoredProfile>({
                         color: "#dc2626",
                       }}
                     >
-                      This product contains ingredients that match your pet’s allergy
-                      list.
+                      This product contains ingredients that match {profile.petName}’s allergy list.
                     </div>
                     <ul style={{ marginTop: 8, marginBottom: 16 }}>
                       {hits.map((h) => (
