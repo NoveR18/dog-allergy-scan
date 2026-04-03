@@ -20,110 +20,111 @@ export function classifyApiLookupProduct(
 
   const combinedText = [name, brand, ingredientsText].filter(Boolean).join(" ");
   const combinedWords = combinedText
-  .split(/\s+/)
-  .map((w) => w.replace(/[^a-z]/g, ""))
-  .filter(Boolean);
+    .split(/\s+/)
+    .map((w) => w.replace(/[^a-z]/g, ""))
+    .filter(Boolean);
 
-const TREAT_KEYWORDS = [
-  "treat",
-  "treats",
-  "biscuit",
-  "biscuits",
-  "chew",
-  "chews",
-  "snack",
-  "snacks",
-];
+  const TREAT_KEYWORDS = [
+    "treat",
+    "treats",
+    "biscuit",
+    "biscuits",
+    "chew",
+    "chews",
+    "snack",
+    "snacks",
+  ];
 
-const FOOD_KEYWORDS = [
-  "recipe",
-  "formula",
-  "dinner",
-  "food",
-  "kibble",
-  "nutrition",
-  "meal",
-  "entree",
-];
+  const FOOD_KEYWORDS = [
+    "recipe",
+    "formula",
+    "dinner",
+    "food",
+    "kibble",
+    "nutrition",
+    "meal",
+    "entree",
+  ];
 
-const DENTAL_KEYWORDS = [
-  "dental",
-  "oral",
-  "teeth",
-  "gums",
-  "breath",
-];
+  const DENTAL_KEYWORDS = [
+    "dental",
+    "oral",
+    "teeth",
+    "gums",
+    "breath",
+  ];
 
   const WET_FOOD_KEYWORDS = [
-  "pate",
-  "stew",
-  "gravy",
-  "morsels",
-  "canned",
-  "shreds",
-];
+    "pate",
+    "stew",
+    "gravy",
+    "morsels",
+    "canned",
+    "shreds",
+    "bisque",
+    "mousse",
+  ];
 
-const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
-  "kibble",
-];
+  const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
+    "kibble",
+  ];
 
-const WET_FOOD_SUBCATEGORY_KEYWORDS = [
-  "pate",
-  "stew",
-  "gravy",
-  "morsels",
-  "shreds",
-  "bisque",
-  "mousse",
-];
-  
-if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
+  const WET_FOOD_SUBCATEGORY_KEYWORDS = [
+    "pate",
+    "stew",
+    "gravy",
+    "morsels",
+    "shreds",
+    "bisque",
+    "mousse",
+  ];
 
-const TREAT_SUBCATEGORY_KEYWORDS = {
-  dental: DENTAL_KEYWORDS,
-};
+  const TREAT_SUBCATEGORY_KEYWORDS = {
+    dental: DENTAL_KEYWORDS,
+  };
 
-const treatSubcategory = Object.entries(TREAT_SUBCATEGORY_KEYWORDS).find(
-  ([, keywords]) =>
-    combinedWords.some((word) =>
-      keywords.some((keyword) => word.startsWith(keyword))
-    )
-);
+  if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
+    const treatSubcategory = Object.entries(TREAT_SUBCATEGORY_KEYWORDS).find(
+      ([, keywords]) =>
+        combinedWords.some((word) =>
+          keywords.some((keyword) => word.startsWith(keyword))
+        )
+    );
 
-return {
-  productCategory: "treats",
-  productSubcategory: treatSubcategory ? treatSubcategory[0] : null,
-  confidence: 0.8,
-  source: "rule",
-};
+    return {
+      productCategory: "treats",
+      productSubcategory: treatSubcategory ? treatSubcategory[0] : null,
+      confidence: 0.8,
+      source: "rule",
+    };
   }
 
-if (WET_FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
-  const isPate = WET_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
-    combinedWords.includes(word)
-  );
+  if (WET_FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
+    const wetFoodSubcategory = WET_FOOD_SUBCATEGORY_KEYWORDS.find((word) =>
+      combinedWords.includes(word)
+    );
 
-  return {
-    productCategory: "wet_food",
-    productSubcategory: isPate ? "pate" : null,
-    confidence: 0.7,
-    source: "rule",
-  };
-}
+    return {
+      productCategory: "wet_food",
+      productSubcategory: wetFoodSubcategory || null,
+      confidence: 0.7,
+      source: "rule",
+    };
+  }
 
-if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
-  const isDryFood = DRY_FOOD_SUBCATEGORY_KEYWORDS.some((word) =>
-    combinedWords.includes(word)
-  );
+  if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
+    const dryFoodSubcategory = DRY_FOOD_SUBCATEGORY_KEYWORDS.find((word) =>
+      combinedWords.includes(word)
+    );
 
-  return {
-    productCategory: "dry_food",
-    productSubcategory: isDryFood ? "kibble" : null,
-    confidence: 0.55,
-    source: "rule",
-  };
-}
-  
+    return {
+      productCategory: "dry_food",
+      productSubcategory: dryFoodSubcategory || null,
+      confidence: 0.55,
+      source: "rule",
+    };
+  }
+
   return {
     productCategory: null,
     productSubcategory: null,
