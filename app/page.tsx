@@ -166,7 +166,7 @@ function getTestApiProduct(barcode: string): ApiLookupProduct | null {
 
 export default function Home() {
   const [profile, setProfile] = useState<StoredProfile>({
-    dogName: "My Dog",
+    : "My Pet",
     allergens: [],
   });
   const [draftAllergen, setDraftAllergen] = useState("");
@@ -440,8 +440,8 @@ export default function Home() {
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <label style={{ fontWeight: 600, opacity: 0.85 }}>Pet name</label>
           <input
-            value={profile.dogName}
-            onChange={(e) => setProfile({ ...profile, dogName: e.target.value })}
+            value={profile.petName}
+            onChange={(e) => setProfile({ ...profile, petName: e.target.value })}
             style={{
               padding: 10,
               borderRadius: 12,
@@ -820,7 +820,7 @@ export default function Home() {
                       }}
                     >
                       No allergens from your saved pet allergy list were detected for{" "}
-                      {profile.dogName}.
+                      {profile.petName}.
                     </div>
                   </div>
                 )}
