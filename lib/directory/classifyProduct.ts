@@ -19,6 +19,7 @@ export function classifyApiLookupProduct(
   const ingredientsText = normalizeClassificationText(apiProduct.ingredientsText);
 
   const combinedText = [name, brand, ingredientsText].filter(Boolean).join(" ");
+  const combinedWords = combinedText.split(/\s+/).filter(Boolean);
 
   if (
   combinedText.includes("treat") ||
