@@ -48,6 +48,14 @@ const FROZEN_RAW_KEYWORDS = [
   "raw",
 ];
 
+const FREEZE_DRY_DEHYDRATE_AIR_DRY_KEYWORDS = [
+  "freezedried",
+  "freeze-dried",
+  "dehydrated",
+  "airdried",
+  "air-dried",
+];
+
 const WET_FOOD_KEYWORDS = [
   "pate",
   "stew",
@@ -79,7 +87,7 @@ export function classifyApiLookupProduct(
   const combinedText = [name, brand, ingredientsText].filter(Boolean).join(" ");
   const combinedWords = combinedText
     .split(/\s+/)
-    .map((w) => w.replace(/[^a-z]/g, ""))
+    .map((w) => w.replace(/[^a-z-]/g, ""))
     .filter(Boolean);
 
   // ===== TREATS =====
@@ -105,6 +113,34 @@ export function classifyApiLookupProduct(
       productCategory: "frozen_raw",
       productSubcategory: null,
       confidence: 0.75,
+      source: "rule",
+    };
+  }
+
+  // ===== FREEZE-DRIED / DEHYDRATED / AIR-DRIED =====
+  if (
+    FREEZE_DRY_DEHYDRATE_AIR_DRY_KEYWORDS.some((word) =>
+      combinedWords.includes(word)
+    )
+  ) {
+    const matchedDryingMethod = FREEZE_DRY_DEHYDRATE_AIR_DRY_KEYWORDS.find(
+      (word) => combinedWords.includes(word)
+    );
+
+    let productSubcategory: string | null = null;
+
+    if (matchedDryingMethod === "freezedried" || matchedDryingMethod === "freeze-dried") {
+      productSubcategory = "freeze_dried";
+    } else if (matchedDryingMethod === "airdried" || matchedDryingMethod === "air-dried") {
+      productSubcategory = "air_dried";
+    } else if (matchedDryingMethod === "dehydrated") {
+      productSubcategory = "dehydrated";
+    }
+
+    return {
+      productCategory: "freeze_dried_dehydrated_air_dried",
+      productSubcategory,
+      confidence: 0.72,
       source: "rule",
     };
   }
