@@ -100,6 +100,11 @@ const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
 
 const TREAT_SUBCATEGORY_KEYWORDS: Record<string, string[]> = {
   dental: DENTAL_KEYWORDS,
+  freeze_dried: [
+    "freeze-dried",
+    "freezedried",
+    "freeze",
+  ],
 };
 
 // ===== CLASSIFIER =====
@@ -134,16 +139,29 @@ export function classifyApiLookupProduct(
 
   // ===== TREATS =====
   if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
-    const treatSubcategory = Object.entries(TREAT_SUBCATEGORY_KEYWORDS).find(
-      ([, keywords]) =>
-        combinedWords.some((word) =>
-          keywords.some((keyword) => word.startsWith(keyword))
-        )
-    );
+
+    let productSubcategory: string | null = null;
+
+    // detect freeze-dried treats FIRST
+    if (hasFreezeDried) {
+      productSubcategory = "freeze_dried";
+    }
+
+    // fallback to existing subcategories
+    if (!productSubcategory) {
+      const treatSubcategory = Object.entries(TREAT_SUBCATEGORY_KEYWORDS).find(
+        ([, keywords]) =>
+          combinedWords.some((word) =>
+            keywords.some((keyword) => word.startsWith(keyword))
+          )
+      );
+
+      productSubcategory = treatSubcategory ? treatSubcategory[0] : null;
+    }
 
     return {
       productCategory: "treats",
-      productSubcategory: treatSubcategory ? treatSubcategory[0] : null,
+      productSubcategory,
       confidence: 0.8,
       source: "rule",
     };
@@ -159,7 +177,7 @@ export function classifyApiLookupProduct(
     };
   }
 
-  // ===== FREEZE-DRIED / DEHYDRATED / AIR-DRIED =====
+  // ===== FREEZE-DRIED / DEHYDRATED / AIR-DRIED (FOOD) =====
   if (
     hasFreezeDried ||
     hasAirDried ||
