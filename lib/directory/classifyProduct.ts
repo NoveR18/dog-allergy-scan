@@ -8,7 +8,11 @@ export type ClassificationResult = {
 };
 
 function normalizeClassificationText(value: string | undefined): string {
-  return (value || "").trim().toLowerCase();
+  return (value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 // ===== KEYWORDS =====
@@ -22,6 +26,17 @@ const TREAT_KEYWORDS = [
   "chews",
   "snack",
   "snacks",
+  "jerky",
+  "jerkies",
+  "cookie",
+  "cookies",
+  "bone",
+  "bones",
+  "reward",
+  "rewards",
+  "trainer",
+  "trainers",
+  "training",
 ];
 
 const FOOD_KEYWORDS = [
@@ -33,6 +48,14 @@ const FOOD_KEYWORDS = [
   "nutrition",
   "meal",
   "entree",
+  "complete",
+  "balanced",
+  "diet",
+];
+
+const TOPPER_KEYWORDS = [
+  "topper",
+  "toppers",
 ];
 
 const DENTAL_KEYWORDS = [
@@ -60,11 +83,15 @@ const WET_FOOD_KEYWORDS = [
   "pate",
   "stew",
   "gravy",
+  "morsel",
   "morsels",
   "canned",
   "shreds",
   "bisque",
   "mousse",
+  "loaf",
+  "broth",
+  "sauce",
 ];
 
 const DRY_FOOD_SUBCATEGORY_KEYWORDS = [
@@ -89,6 +116,21 @@ export function classifyApiLookupProduct(
     .split(/\s+/)
     .map((w) => w.replace(/[^a-z-]/g, ""))
     .filter(Boolean);
+
+  const hasFreezeDried =
+    combinedText.includes("freeze dried") ||
+    combinedWords.includes("freeze-dried") ||
+    combinedWords.includes("freezedried");
+
+  const hasAirDried =
+    combinedText.includes("air dried") ||
+    combinedWords.includes("air-dried") ||
+    combinedWords.includes("airdried");
+
+  const hasDehydrated = combinedWords.includes("dehydrated");
+  const hasTopperKeyword = TOPPER_KEYWORDS.some((word) =>
+    combinedWords.includes(word)
+  );
 
   // ===== TREATS =====
   if (TREAT_KEYWORDS.some((word) => combinedWords.includes(word))) {
@@ -119,21 +161,20 @@ export function classifyApiLookupProduct(
 
   // ===== FREEZE-DRIED / DEHYDRATED / AIR-DRIED =====
   if (
+    hasFreezeDried ||
+    hasAirDried ||
+    hasDehydrated ||
     FREEZE_DRY_DEHYDRATE_AIR_DRY_KEYWORDS.some((word) =>
       combinedWords.includes(word)
     )
   ) {
-    const matchedDryingMethod = FREEZE_DRY_DEHYDRATE_AIR_DRY_KEYWORDS.find(
-      (word) => combinedWords.includes(word)
-    );
-
     let productSubcategory: string | null = null;
 
-    if (matchedDryingMethod === "freezedried" || matchedDryingMethod === "freeze-dried") {
+    if (hasFreezeDried) {
       productSubcategory = "freeze_dried";
-    } else if (matchedDryingMethod === "airdried" || matchedDryingMethod === "air-dried") {
+    } else if (hasAirDried) {
       productSubcategory = "air_dried";
-    } else if (matchedDryingMethod === "dehydrated") {
+    } else if (hasDehydrated) {
       productSubcategory = "dehydrated";
     }
 
@@ -160,7 +201,10 @@ export function classifyApiLookupProduct(
   }
 
   // ===== DRY FOOD =====
-  if (FOOD_KEYWORDS.some((word) => combinedWords.includes(word))) {
+  if (
+    FOOD_KEYWORDS.some((word) => combinedWords.includes(word)) &&
+    !hasTopperKeyword
+  ) {
     const dryFoodSubcategory = DRY_FOOD_SUBCATEGORY_KEYWORDS.find((word) =>
       combinedWords.includes(word)
     );
