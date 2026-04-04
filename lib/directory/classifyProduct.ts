@@ -43,6 +43,11 @@ const DENTAL_KEYWORDS = [
   "breath",
 ];
 
+const FROZEN_RAW_KEYWORDS = [
+  "frozen",
+  "raw",
+];
+
 const WET_FOOD_KEYWORDS = [
   "pate",
   "stew",
@@ -90,6 +95,16 @@ export function classifyApiLookupProduct(
       productCategory: "treats",
       productSubcategory: treatSubcategory ? treatSubcategory[0] : null,
       confidence: 0.8,
+      source: "rule",
+    };
+  }
+
+  // ===== FROZEN RAW =====
+  if (FROZEN_RAW_KEYWORDS.every((word) => combinedWords.includes(word))) {
+    return {
+      productCategory: "frozen_raw",
+      productSubcategory: null,
+      confidence: 0.75,
       source: "rule",
     };
   }
