@@ -6,11 +6,15 @@ export const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-    request.onerror = () => reject("Error opening DB");
+    request.onerror = () => {
+      reject(new Error("Error opening IndexedDB"));
+    };
 
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => {
+      resolve(request.result);
+    };
 
-    request.onupgradeneeded = () => {
+    request.onupgradeneeded = (event) => {
       const db = request.result;
 
       if (!db.objectStoreNames.contains(STORE_NAME)) {
@@ -20,7 +24,9 @@ export const openDB = (): Promise<IDBDatabase> => {
 
         store.createIndex("brand", "brand", { unique: false });
         store.createIndex("name", "name", { unique: false });
-        store.createIndex("productCategory", "productCategory", { unique: false });
+        store.createIndex("productCategory", "productCategory", {
+          unique: false,
+        });
       }
     };
   });
