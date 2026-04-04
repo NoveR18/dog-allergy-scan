@@ -5,6 +5,57 @@ function cleanBarcode(code: string) {
   return (code || "").replace(/\D/g, "").trim();
 }
 
+const TEST_PRODUCTS: Record<string, ApiLookupProduct> = {
+  "111": {
+    barcode: "111",
+    name: "Chicken Pate Wet Food",
+    brand: "TestBrand",
+    imageUrl: "",
+    ingredientsText: "chicken, broth, vitamins",
+    source: "openpetfoodfacts",
+  },
+  "222": {
+    barcode: "222",
+    name: "Freeze Dried Raw Beef Recipe",
+    brand: "TestBrand",
+    imageUrl: "",
+    ingredientsText: "beef",
+    source: "openpetfoodfacts",
+  },
+  "333": {
+    barcode: "333",
+    name: "Dental Chews for Dogs",
+    brand: "TestBrand",
+    imageUrl: "",
+    ingredientsText: "wheat flour, mint, parsley",
+    source: "openpetfoodfacts",
+  },
+  "444": {
+    barcode: "444",
+    name: "Air Dried Lamb Recipe",
+    brand: "TestBrand",
+    imageUrl: "",
+    ingredientsText: "lamb, vitamins, minerals",
+    source: "openpetfoodfacts",
+  },
+  "555": {
+    barcode: "555",
+    name: "Chicken Meal Topper",
+    brand: "TestBrand",
+    imageUrl: "",
+    ingredientsText: "chicken, pumpkin",
+    source: "openpetfoodfacts",
+  },
+  "666": {
+    barcode: "666",
+    name: "Frozen Raw Chicken Dinner",
+    brand: "TestBrand",
+    imageUrl: "",
+    ingredientsText: "chicken, bone, liver",
+    source: "openpetfoodfacts",
+  },
+};
+
 async function fetchGoUPC(barcode: string): Promise<ApiLookupProduct | null> {
   const key = process.env.GO_UPC_API_KEY;
   if (!key) return null;
@@ -47,8 +98,8 @@ async function fetchOpenPetFoodFacts(barcode: string): Promise<ApiLookupProduct 
     imageUrl: p.image_url,
     ingredientsText: p.ingredients_text_en || "",
     note: p.ingredients_text_en
-  ? undefined
-  : "Ingredients not available in English for this barcode.",
+      ? undefined
+      : "Ingredients not available in English for this barcode.",
     source: "openpetfoodfacts",
   };
 }
@@ -69,8 +120,8 @@ async function fetchOpenFoodFacts(barcode: string): Promise<ApiLookupProduct | n
     imageUrl: p.image_url,
     ingredientsText: p.ingredients_text_en || "",
     note: p.ingredients_text_en
-  ? undefined
-  : "Ingredients not available in English for this barcode.",
+      ? undefined
+      : "Ingredients not available in English for this barcode.",
     source: "openfoodfacts",
   };
 }
@@ -83,6 +134,11 @@ export async function GET(req: Request) {
 
     if (!barcode) {
       return NextResponse.json({ error: "Missing barcode" }, { status: 400 });
+    }
+
+    const testProduct = TEST_PRODUCTS[barcode];
+    if (testProduct) {
+      return NextResponse.json(testProduct);
     }
 
     const goUpc = await fetchGoUPC(barcode);
