@@ -1,5 +1,5 @@
 import { openDB } from "./db";
-import { Product } from "./types";
+import type { Product } from "./types";
 
 const STORE_NAME = "products";
 
@@ -13,8 +13,8 @@ export const saveProduct = async (product: Product): Promise<void> => {
     store.put(product);
 
     tx.oncomplete = () => resolve();
-    tx.onerror = () => reject("Failed to save product");
-    tx.onabort = () => reject("Save transaction was aborted");
+    tx.onerror = () => reject(new Error("Failed to save product"));
+    tx.onabort = () => reject(new Error("Save transaction was aborted"));
   });
 };
 
@@ -29,7 +29,7 @@ export const getProductByBarcode = async (
     const request = store.get(barcode);
 
     request.onsuccess = () => resolve(request.result || null);
-    request.onerror = () => reject("Failed to fetch product");
+    request.onerror = () => reject(new Error("Failed to fetch product"));
   });
 };
 
@@ -42,7 +42,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
     const request = store.getAll();
 
     request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => reject("Failed to fetch products");
+    request.onerror = () => reject(new Error("Failed to fetch products"));
   });
 };
 
@@ -55,6 +55,6 @@ export const deleteProduct = async (barcode: string): Promise<void> => {
     const request = store.delete(barcode);
 
     request.onsuccess = () => resolve();
-    request.onerror = () => reject("Failed to delete product");
+    request.onerror = () => reject(new Error("Failed to delete product"));
   });
 };
