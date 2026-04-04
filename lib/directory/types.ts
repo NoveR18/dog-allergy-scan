@@ -16,6 +16,21 @@ export type Species = "dog" | "cat";
 
 export type BarcodeType = "UPC" | "EAN" | "GTIN" | "UNKNOWN";
 
+export type ProductSizeUnit =
+  | "lb"
+  | "oz"
+  | "kg"
+  | "g"
+  | "mg"
+  | "L"
+  | "mL"
+  | "count"
+  | "pack";
+
+export type ProductSource = "manual" | "api" | "imported";
+
+export type Verdict = "SAFE" | "AVOID" | "UNKNOWN";
+
 export type AffiliateLink = {
   retailer: string;
   url: string;
@@ -41,20 +56,10 @@ export type Product = {
   productCategory: ProductCategory | null;
   productSubcategory: string | null;
   sizeValue: number | null;
-  sizeUnit:
-    | "lb"
-    | "oz"
-    | "kg"
-    | "g"
-    | "mg"
-    | "L"
-    | "mL"
-    | "count"
-    | "pack"
-    | null;
+  sizeUnit: ProductSizeUnit | null;
   imageUrl: string;
   ingredientsText: string;
-  source: "manual" | "api" | "imported";
+  source: ProductSource;
   verified: boolean;
   notes: string;
   lastUpdated: string;
@@ -86,7 +91,7 @@ export type ScanHistoryItem = {
   scannedAt: string;
   name: string;
   brand: string;
-  verdict: "SAFE" | "AVOID" | "UNKNOWN";
+  verdict: Verdict;
   matchedAllergens: string[];
   petProfileId: string | null;
 };
