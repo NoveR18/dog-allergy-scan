@@ -54,6 +54,14 @@ const TEST_PRODUCTS: Record<string, ApiLookupProduct> = {
     ingredientsText: "chicken, bone, liver",
     source: "openpetfoodfacts",
   },
+  "777": {
+    barcode: "777",
+    name: "Freeze Dried Chicken Treats",
+    brand: "TestBrand",
+    imageUrl: "",
+    ingredientsText: "chicken",
+    source: "openpetfoodfacts",
+  },
 };
 
 async function fetchGoUPC(barcode: string): Promise<ApiLookupProduct | null> {
